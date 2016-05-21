@@ -1,3 +1,10 @@
 .home {
-  
+    text-align: center;
+    button {
+        width: 50%;
+        margin-top: 25px;
+        $padding-vertical: 22px;
+        padding-top: $padding-vertical;
+        padding-bottom: $padding-vertical;
+    }
 }
