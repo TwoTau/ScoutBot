@@ -11,5 +11,10 @@ export class SavedCodesPage {
 
     constructor(nav) {
         this.nav = nav;
+        this.data = [
+            {teamNumber: 2976, teamName: "Spartabots", scout: "Vishal"},
+            {teamNumber: 1331, teamName: "Allwe", scout: "John"},
+            {teamNumber: Math.floor(Math.random()*4000+200), teamName: "Descrubs", scout: "Bobbert"}
+        ];
     }
 }

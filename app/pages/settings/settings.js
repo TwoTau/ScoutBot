@@ -14,6 +14,7 @@ export class SettingsPage {
         this.nav = nav;
         this.http = http;
 
+        this.teamsLoaded = false;
         this.allTeams = [];
 
         this.http = http;
@@ -86,6 +87,8 @@ export class SettingsPage {
                         if(this.validateEventCode(eventCode)) {
                             this.http.get(this.makeUrl(eventCode)).subscribe(data => {
                                 this.allTeams = data.json();
+                                this.teamsLoaded = true;
+                                document.getElementById("addChangeEvent").innerHTML = "Change event";
                             }, error => {
                                 this.onInvalidCode(eventCode);
                             });
