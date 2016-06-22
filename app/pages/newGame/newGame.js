@@ -1,4 +1,4 @@
-import {Page, NavParams} from 'ionic-angular';
+import {Page, NavParams, Storage, SqlStorage} from 'ionic-angular';
 
 @Page({
     templateUrl: 'build/pages/newGame/newGame.html'
@@ -6,6 +6,12 @@ import {Page, NavParams} from 'ionic-angular';
 
 export class NewGamePage {
     constructor() {
+        this.ranNum = 0;
 
+        this.storage = new Storage(SqlStorage);
+
+        this.storage.get("randNumber").then((info) => {
+            this.ranNum = info;
+        });
     }
 }

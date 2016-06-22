@@ -26,8 +26,6 @@ export class HomePage {
     }
 
     goToSettings() {
-        this.nav.push(SettingsPage, {
-            a: "Ahh"
-        });
+        this.nav.push(SettingsPage);
     }
 }

@@ -31,4 +31,19 @@
             </ion-item>
         </ion-card-content>
     </ion-card>
+    <ion-card>
+        <ion-card-header>
+            Import {{ ranNum }}
+        </ion-card-header>
+        <ion-card-content>
+            <button dark (click)="resetStorageNumber()">Reset storage number</button>
+            <button (click)="getEvent()">Add event</button>
+            <table id="eventInfo">
+                <tr *ngFor="let team of allTeams">
+                    <td>{{ team.team_number}}</td>
+                    <td><a href="{{ team.website }}">{{ team.nickname }}</a></td>
+                </tr>
+            </table>
+        </ion-card-content>
+    </ion-card>
 </ion-content>
