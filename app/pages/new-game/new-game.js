@@ -1,7 +1,7 @@
 import {Page, NavParams, Storage, SqlStorage} from 'ionic-angular';
 
 @Page({
-    templateUrl: 'build/pages/newGame/newGame.html'
+    templateUrl: 'build/pages/new-game/new-game.html'
 })
 
 export class NewGamePage {

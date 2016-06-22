@@ -1,6 +1,7 @@
 import {Page, NavController, NavParams} from 'ionic-angular';
 import {SettingsPage} from '../settings/settings';
-import {NewGamePage} from '../newGame/newGame';
+import {NewGamePage} from '../new-game/new-game';
+import {SavedCodesPage} from '../saved-codes/saved-codes';
 
 @Page({
     templateUrl: 'build/pages/home/home.html'
@@ -17,12 +18,17 @@ export class HomePage {
         this.navParams = navParams;
         this.settings = SettingsPage;
         this.newGame = NewGamePage;
+        this.savedQRs = SavedCodesPage;
     }
 
     makeNewGame() {
         this.nav.push(NewGamePage, {
             b: "Bahh"
         });
+    }
+
+    goToSavedCodes() {
+        this.nav.push(SavedCodesPage);
     }
 
     goToSettings() {

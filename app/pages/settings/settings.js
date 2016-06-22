@@ -1,4 +1,5 @@
 import {Page, NavController, Alert, Storage, SqlStorage} from 'ionic-angular';
+import {Http} from '@angular/http';
 
 @Page({
     templateUrl: 'build/pages/settings/settings.html'
@@ -6,18 +7,22 @@ import {Page, NavController, Alert, Storage, SqlStorage} from 'ionic-angular';
 
 export class SettingsPage {
     static get parameters() {
-        return [[NavController]];
+        return [[NavController], [Http]];
     }
 
-    constructor(nav) {
+    constructor(nav, http) {
         this.nav = nav;
+        this.http = http;
+
         this.allTeams = [];
+
+        this.http = http;
 
         this.ranNum = 0;
 
         this.storage = new Storage(SqlStorage);
 
-        this.storage.get("randNumber").then((info) => {
+        this.storage.get("randNumber").then(info => {
             this.ranNum = info;
         });
     }
@@ -32,7 +37,8 @@ export class SettingsPage {
     }
 
     validateEventCode(eventCode) {
-        if(+eventCode.substr(0, 4) < 2016 || +eventCode.substr(0, 4) > 2017) {
+        let eventYear = +eventCode.substr(0, 4);
+        if(eventYear < 2016 || eventYear > 2017 || eventCode < 8 || eventCode.length > 9) {
             return false;
         }
 
@@ -46,21 +52,20 @@ export class SettingsPage {
         return true;
     }
 
-    getEvent() {
-        this.askForEventCode();
-    }
-
-    onSuccess(self, res) {
-        self.allTeams = JSON.parse(res);
-        // for(let team of self.allTeams) {
-        //     console.log(team.nickname);
-        // }
+    onInvalidCode(invalidEventCode) {
+        let message = "The event code <strong>" + invalidEventCode + "</strong> is not a valid Blue Alliance event code for this year or you do not have internet.";
+        let alert = Alert.create({
+            title: "Invalid event code",
+            subTitle: message,
+            buttons: ["Dismiss"]
+        });
+        this.nav.present(alert);
     }
 
     askForEventCode() {
         let prompt = Alert.create({
             title: "Add new event",
-            message: "Enter the Blue alliance event code for your event. To find this, go to your event on TBA and look at the end of the URL (e.x. 2016wasno, 2016ohcl, or 2016mawor). *Requires internet connection",
+            message: "Enter the Blue Alliance event code for your event. To find this, go to your event on TBA and look at the end of the URL (e.x. 2016wasno, 2016ohcl, or 2016mawor). <strong>Requires internet connection</strong>.",
             inputs: [
                 {
                     name: "eventcode",
@@ -79,11 +84,13 @@ export class SettingsPage {
                     handler: data => {
                         let eventCode = data.eventcode.toLowerCase();
                         if(this.validateEventCode(eventCode)) {
-                            console.log("validated");
-                            let tba_url = this.makeUrl(eventCode);
-                            this.httpGetAsync(tba_url, this.onSuccess);
+                            this.http.get(this.makeUrl(eventCode)).subscribe(data => {
+                                this.allTeams = data.json();
+                            }, error => {
+                                this.onInvalidCode(eventCode);
+                            });
                         } else {
-                            console.log("noperinos");
+                            this.onInvalidCode(eventCode);
                         }
                     }
                 }
@@ -91,17 +98,5 @@ export class SettingsPage {
         });
 
         this.nav.present(prompt);
-    }
-
-    httpGetAsync(theUrl, callback) {
-        let xmlHttp = new XMLHttpRequest();
-        var self = this;
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                callback(self, xmlHttp.responseText);
-            }
-        };
-        xmlHttp.open("GET", theUrl, true);
-        xmlHttp.send(null);
     }
 }

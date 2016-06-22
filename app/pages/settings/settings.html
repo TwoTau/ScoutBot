@@ -37,7 +37,7 @@
         </ion-card-header>
         <ion-card-content>
             <button dark (click)="resetStorageNumber()">Reset storage number</button>
-            <button (click)="getEvent()">Add event</button>
+            <button (click)="askForEventCode()">Add event</button>
             <table id="eventInfo">
                 <tr *ngFor="let team of allTeams">
                     <td>{{ team.team_number}}</td>

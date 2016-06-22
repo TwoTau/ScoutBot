@@ -1,12 +1,9 @@
 .settings {
     #eventInfo {
-        tr {
-            // border: 2px solid #111;
-            td {
-                padding: 2px 5px;
-                &:first-of-type {
-                    text-align: right;
-                }
+        td {
+            padding: 2px 5px;
+            &:first-of-type {
+                text-align: right;
             }
         }
     }
