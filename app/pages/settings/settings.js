@@ -14,14 +14,20 @@ export class SettingsPage {
         this.nav = nav;
         this.http = http;
 
+        this.storage = new Storage(SqlStorage);
+
         this.teamsLoaded = false;
         this.allTeams = [];
 
-        this.http = http;
-
         this.ranNum = 0;
 
-        this.storage = new Storage(SqlStorage);
+        this.storage.get("isMaster").then(value => {
+            this.isMaster = (value === undefined) ? false : value;
+        });
+
+        this.storage.get("colorNumber").then(value => {
+            this.colorNumber = (value === undefined) ? "b1" : value;
+        });
 
         this.storage.get("randNumber").then(info => {
             this.ranNum = info;
@@ -33,11 +39,22 @@ export class SettingsPage {
         this.storage.set("randNumber", this.ranNum);
     }
 
+    onMasterToggleChange(value) {
+        console.log("toggled isMaster. Now it is: " + value);
+        this.storage.set("isMaster", value);
+    }
+
+    colorNumberSelected(colorNumber) {
+        this.storage.set("colorNumber", colorNumber);
+    }
+
+    // returns a URL to the BlueAllianceAPI to make a GET request to get event information
     makeUrl(eventCode) {
         return "https://www.thebluealliance.com/api/v2/event/" + eventCode + "/teams?X-TBA-App-Id=frc2976:post-season-scouting-app:v01"
     }
 
-    validateEventCode(eventCode) {
+    // is the eventCode in the form of a BlueAllianceAPI event code
+    isValidEventCode(eventCode) {
         let eventYear = +eventCode.substr(0, 4);
         if(eventYear < 2016 || eventYear > 2017 || eventCode < 8 || eventCode.length > 9) {
             return false;
@@ -84,15 +101,16 @@ export class SettingsPage {
                     text: "Add",
                     handler: data => {
                         let eventCode = data.eventcode.toLowerCase();
-                        if(this.validateEventCode(eventCode)) {
-                            this.http.get(this.makeUrl(eventCode)).subscribe(data => {
+
+                        if(this.isValidEventCode(eventCode)) { // it fits the format
+                            this.http.get(this.makeUrl(eventCode)).subscribe(data => { // HTTP GET from the BlueAllianceAPI
                                 this.allTeams = data.json();
                                 this.teamsLoaded = true;
                                 document.getElementById("addChangeEvent").innerHTML = "Change event";
-                            }, error => {
+                            }, error => { // not a recognized event code (404) or no internet connection
                                 this.onInvalidCode(eventCode);
                             });
-                        } else {
+                        } else { // invalid format
                             this.onInvalidCode(eventCode);
                         }
                     }

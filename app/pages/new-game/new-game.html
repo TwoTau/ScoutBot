@@ -1,34 +1,76 @@
 <ion-navbar *navbar>
     <ion-title>
-        Red 2 - Vishal
+        {{ colorNumber }} - {{ scout }}
     </ion-title>
 </ion-navbar>
 
 <ion-content class="new-game">
-    <ion-card>
-        <ion-card-header>
-            General {{ ranNum }}
-        </ion-card-header>
-        <ion-card-content>
-            <ion-item>
-                <ion-label>Is master</ion-label>
-                <ion-checkbox></ion-checkbox>
-            </ion-item>
-            <ion-item>
-                <ion-label fixed>Scout name</ion-label>
-                <ion-input type="text" placeholder="John Doe"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label>Color / Number</ion-label>
-                <ion-select>
-                    <ion-option value="r1">Red 1</ion-option>
-                    <ion-option value="r2">Red 2</ion-option>
-                    <ion-option value="r3">Red 3</ion-option>
-                    <ion-option value="b1">Blue 1</ion-option>
-                    <ion-option value="b2">Blue 2</ion-option>
-                    <ion-option value="b3">Blue 3</ion-option>
-                </ion-select>
-            </ion-item>
-        </ion-card-content>
-    </ion-card>
+    <div padding>
+        <ion-segment [(ngModel)]="gameMode">
+            <ion-segment-button value="pre">
+                Pregame
+            </ion-segment-button>
+            <ion-segment-button value="during">
+                During
+            </ion-segment-button>
+            <ion-segment-button value="post">
+                Post
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <div [ngSwitch]="gameMode">
+        <div *ngSwitchWhen="'pre'">
+            <ion-card>
+                <ion-card-header>
+                    General {{ ranNum }}
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Is master</ion-label>
+                        <ion-checkbox></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Scout name</ion-label>
+                        <ion-input type="text" placeholder="John Doe"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Color / Number</ion-label>
+                        <ion-select>
+                            <ion-option value="r1">Red 1</ion-option>
+                            <ion-option value="r2">Red 2</ion-option>
+                            <ion-option value="r3">Red 3</ion-option>
+                            <ion-option value="b1">Blue 1</ion-option>
+                            <ion-option value="b2">Blue 2</ion-option>
+                            <ion-option value="b3">Blue 3</ion-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+            <ion-card>
+                <ion-card-header>
+                    Fouls
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Foul / Yellow/Red card</ion-label>
+                        <ion-checkbox></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Dead bot</ion-label>
+                        <ion-checkbox></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </div>
+
+        <div *ngSwitchWhen="'during'">
+
+        </div>
+
+        <div *ngSwitchWhen="'post'">
+
+        </div>
+    </div>
+
 </ion-content>

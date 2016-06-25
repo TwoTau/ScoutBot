@@ -6,6 +6,11 @@ import {Page, NavParams, Storage, SqlStorage} from 'ionic-angular';
 
 export class NewGamePage {
     constructor() {
+        this.gameMode = "pre";
+
+        this.colorNumber = "Blue 2";
+        this.scout = "Scout Name";
+
         this.ranNum = 0;
 
         this.storage = new Storage(SqlStorage);
