@@ -19,33 +19,22 @@ export class SettingsPage {
         this.teamsLoaded = false;
         this.allTeams = [];
 
-        this.ranNum = 0;
-
         this.storage.get("isMaster").then(value => {
             this.isMaster = (value === undefined) ? false : value;
         });
 
+        this.storage.get("scout").then(value => {
+            this.scout = (value === undefined) ? "" : value;
+        });
+
         this.storage.get("colorNumber").then(value => {
-            this.colorNumber = (value === undefined) ? "b1" : value;
-        });
-
-        this.storage.get("randNumber").then(info => {
-            this.ranNum = info;
+            this.colorNumber = (value === undefined) ? "Red 1" : value;
         });
     }
 
-    resetStorageNumber() {
-        this.ranNum = Math.floor(Math.random()*100);
-        this.storage.set("randNumber", this.ranNum);
-    }
-
-    onMasterToggleChange(value) {
-        console.log("toggled isMaster. Now it is: " + value);
-        this.storage.set("isMaster", value);
-    }
-
-    colorNumberSelected(colorNumber) {
-        this.storage.set("colorNumber", colorNumber);
+    updateStorage(key) {
+        console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
+        this.storage.set(key, this[key]);
     }
 
     // returns a URL to the BlueAllianceAPI to make a GET request to get event information

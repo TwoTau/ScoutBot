@@ -12,31 +12,30 @@
         <ion-card-content>
             <ion-item>
                 <ion-label>Is master</ion-label>
-                <ion-toggle [(ngModel)]="isMaster"></ion-toggle>
+                <ion-toggle [(ngModel)]="isMaster" (change)="updateStorage('isMaster')"></ion-toggle>
             </ion-item>
             <ion-item>
                 <ion-label>Scout name</ion-label>
-                <ion-input type="text" placeholder="John Doe"></ion-input>
+                <ion-input type="text" placeholder="John Doe" [(ngModel)]="scout" (change)="updateStorage('scout')"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>Color / Number</ion-label>
-                <ion-select [(ngModel)]="colorNumber">
-                    <ion-option value="r1">Red 1</ion-option>
-                    <ion-option value="r2">Red 2</ion-option>
-                    <ion-option value="r3">Red 3</ion-option>
-                    <ion-option value="b1">Blue 1</ion-option>
-                    <ion-option value="b2">Blue 2</ion-option>
-                    <ion-option value="b3">Blue 3</ion-option>
+                <ion-select [(ngModel)]="colorNumber" (change)="updateStorage('colorNumber')">
+                    <ion-option value="Red 1">Red 1</ion-option>
+                    <ion-option value="Red 2">Red 2</ion-option>
+                    <ion-option value="Red 3">Red 3</ion-option>
+                    <ion-option value="Blue 1">Blue 1</ion-option>
+                    <ion-option value="Blue 2">Blue 2</ion-option>
+                    <ion-option value="Blue 3">Blue 3</ion-option>
                 </ion-select>
             </ion-item>
         </ion-card-content>
     </ion-card>
     <ion-card>
         <ion-card-header>
-            Import {{ ranNum }}
+            Import
         </ion-card-header>
         <ion-card-content>
-            <button dark (click)="resetStorageNumber()">Reset storage number</button>
             <button id="addChangeEvent" secondary (click)="askForEventCode()">Add event</button>
             <button *ngIf="teamsLoaded" danger (click)="removeEventCode()">Remove event</button>
             <table id="eventInfo">
