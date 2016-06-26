@@ -1,4 +1,5 @@
 import {Page, NavController, NavParams} from 'ionic-angular';
+import {BarcodeScanner} from 'ionic-native';
 import {SettingsPage} from '../settings/settings';
 import {NewGamePage} from '../new-game/new-game';
 import {SavedCodesPage} from '../saved-codes/saved-codes';
@@ -33,5 +34,13 @@ export class HomePage {
 
     goToSettings() {
         this.nav.push(SettingsPage);
+    }
+
+    scanQR() {
+        BarcodeScanner.scan().then(barcodeData => {
+            console.log(barcodeData);
+        }, err => {
+            console.log(err);
+        });
     }
 }
