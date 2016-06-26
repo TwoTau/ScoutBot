@@ -9,7 +9,6 @@ import {SavedCodesPage} from '../saved-codes/saved-codes';
 })
 
 export class HomePage {
-
     static get parameters() {
         return [[NavController], [NavParams]];
     }
@@ -37,10 +36,14 @@ export class HomePage {
     }
 
     scanQR() {
-        BarcodeScanner.scan().then(barcodeData => {
-            console.log(barcodeData);
+        BarcodeScanner.scan().then(qrData => {
+            console.log(this.decode(qrData));
         }, err => {
             console.log(err);
         });
+    }
+
+    decode(qrData) {
+        return qrData.split(",");
     }
 }
