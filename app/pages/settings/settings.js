@@ -16,8 +16,16 @@ export class SettingsPage {
 
         this.storage = new Storage(SqlStorage);
 
+        this.storage.query("CREATE TABLE IF NOT EXISTS eventteams (number INTEGER PRIMARY KEY, nickname TEXT, website TEXT)").then(data => {
+            console.log("TABLE CREATED -> " + JSON.stringify(data.res));
+        }, error => {
+            console.log("create error -> " + JSON.stringify(error.err));
+        });
+
         this.teamsLoaded = false;
         this.allTeams = [];
+
+        this.loadFromDb();
 
         this.storage.get("isMaster").then(value => {
             this.isMaster = (value === undefined) ? false : value;
@@ -32,6 +40,32 @@ export class SettingsPage {
         });
     }
 
+    loadFromDb() {
+        this.storage.query("SELECT * FROM eventteams").then(data => {
+            if(data.res.rows.length > 0) {
+                for(let i = 0; i < data.res.rows.length; i++) {
+                    this.allTeams.push({
+                        number: data.res.rows.item(i).number,
+                        name: unescape(data.res.rows.item(i).nickname),
+                        website: decodeURIComponent(data.res.rows.item(i).website)
+                    });
+                }
+                this.teamsLoaded = true;
+                document.getElementById("addChangeEvent").innerHTML = "Change event";
+            }
+        }, error => {
+            console.log("select error -> " + JSON.stringify(error.err));
+        });
+    }
+
+    addTeamToDb(number, name, website) {
+        this.storage.query("INSERT INTO eventteams (number, nickname, website) VALUES ('" + number + "', '" + this.escape(name) + "', '" + encodeURIComponent(website) + "')").then(data => {
+
+        }, error => {
+            console.log("insert error -> " + JSON.stringify(error.err) + " with " + name + ", " + website + ", " + website);
+        });
+    }
+
     updateStorage(key) {
         console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
         this.storage.set(key, this[key]);
@@ -40,6 +74,22 @@ export class SettingsPage {
     // returns a URL to the BlueAllianceAPI to make a GET request to get event information
     makeUrl(eventCode) {
         return "https://www.thebluealliance.com/api/v2/event/" + eventCode + "/teams?X-TBA-App-Id=frc2976:post-season-scouting-app:v01"
+    }
+
+    escape(teamName) {
+        var entityMap = {
+            "&": "&amp;",
+            '"': '&quot;',
+            "'": '&#39;'
+        };
+
+        return teamName.replace(/[&"']/g, function(c) {
+            return entityMap[c];
+        });
+    }
+
+    unescape(escapedName) {
+        return escapedName.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39/g, "'");
     }
 
     // is the eventCode in the form of a BlueAllianceAPI event code
@@ -93,9 +143,12 @@ export class SettingsPage {
 
                         if(this.isValidEventCode(eventCode)) { // it fits the format
                             this.http.get(this.makeUrl(eventCode)).subscribe(data => { // HTTP GET from the BlueAllianceAPI
-                                this.allTeams = data.json();
-                                this.teamsLoaded = true;
-                                document.getElementById("addChangeEvent").innerHTML = "Change event";
+                                this.removeEventCode();
+                                let teams = data.json();
+                                for(let team of teams) {
+                                    this.addTeamToDb(team.team_number, team.nickname, team.website);
+                                }
+                                this.loadFromDb();
                             }, error => { // not a recognized event code (404) or no internet connection
                                 this.onInvalidCode(eventCode);
                             });
@@ -108,5 +161,16 @@ export class SettingsPage {
         });
 
         this.nav.present(prompt);
+    }
+
+    removeEventCode() {
+
+        this.storage.query("DELETE FROM eventteams").then(data => {
+            this.allTeams = [];
+            this.teamsLoaded = false;
+            document.getElementById("addChangeEvent").innerHTML = "Add event";
+        }, error => {
+            console.log("delete error -> " + JSON.stringify(error.err));
+        });
     }
 }

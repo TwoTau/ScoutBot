@@ -40,8 +40,8 @@
             <button *ngIf="teamsLoaded" danger (click)="removeEventCode()">Remove event</button>
             <table id="eventInfo">
                 <tr *ngFor="let team of allTeams">
-                    <td>{{ team.team_number}}</td>
-                    <td><a href="{{ team.website }}">{{ team.nickname }}</a></td>
+                    <td>{{ team.number}}</td>
+                    <td><a href="{{ team.website }}">{{ team.name }}</a></td>
                 </tr>
             </table>
         </ion-card-content>

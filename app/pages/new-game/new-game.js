@@ -24,21 +24,30 @@ export class NewGamePage {
             this.scout = (name === undefined) ? "Scout" : name;
         });
 
-        this.defenseA = "Defense A";
-        this.defenseB = "Defense B";
-        this.defenseC = "Defense C";
-        this.defenseD = "Defense D";
+        this.teamNumber;
+
+        this.foul = false;
+        this.deadBot = false;
+
+        this.defenseA = "Portcullis / Cheval de Frise";
+        this.defenseB = "Moat / Ramparts";
+        this.defenseC = "Drawbridge / Sally Port";
+        this.defenseD = "Rock Wall / Rough Terrain";
+
+        this.autonomousDefense = "N";
+
+        this.autonomousSuccessful = false;
     }
 
     makeQR() {
-        if(this.defenseA === "Defense A") {
-            this.notFilledOutError("Defense A", "Pregame");
-        } if(this.defenseA === "Defense B") {
-            this.notFilledOutError("Defense B", "Pregame");
-        } if(this.defenseA === "Defense C") {
-            this.notFilledOutError("Defense C", "Pregame");
-        } if(this.defenseA === "Defense D") {
-            this.notFilledOutError("Defense D", "Pregame");
+        if(this.defenseA === "Portcullis / Cheval de Frise") {
+            return this.notFilledOutError("Defense A", "Pregame");
+        } if(this.defenseB === "Moat / Ramparts") {
+            return this.notFilledOutError("Defense B", "Pregame");
+        } if(this.defenseC === "Drawbridge / Sally Port") {
+            return this.notFilledOutError("Defense C", "Pregame");
+        } if(this.defenseD === "Rock Wall / Rough Terrain") {
+            return this.notFilledOutError("Defense D", "Pregame");
         }
         qr.canvas({
             canvas: document.getElementById("qrCode"),
@@ -47,15 +56,19 @@ export class NewGamePage {
     }
 
     notFilledOutError(fieldUnfilled, section) {
-        let message = "You have not filled out the field '" + fieldUnfilled + "'. in the '" + section + "' section";
-        this.nav.present(Alert.create({
+        let message = "You have not filled out the field <b>" + fieldUnfilled + "</b>. in the <b>" + section + "</b> section.";
+
+        let alert = Alert.create({
             title: "Incomplete section",
             subTitle: message,
             buttons: ["Dismiss"]
-        }));
+        });
+
+        this.nav.present(alert);
     }
 
     getText() {
+
         let scoutInfo = {
             color: this.colorNumber[0] === "R" ? 0 : 3,
             number: +this.colorNumber.slice(-1),

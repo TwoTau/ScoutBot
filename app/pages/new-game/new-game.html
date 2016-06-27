@@ -28,7 +28,7 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Team number</ion-label>
-                        <ion-input type="number" placeholder="e.x. 2976"></ion-input>
+                        <ion-input type="number" placeholder="e.x. 2976" [(ngModel)]="teamNumber"></ion-input>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -39,11 +39,11 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Foul / Yellow/Red card</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="foul"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>Dead bot</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="deadBot"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -117,77 +117,40 @@
                     Autonomous
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-list radio-group>
+                    <ion-list radio-group [(ngModel)]="autonomousDefense">
                         <ion-list-header>
-                            {{ defenseA }}
+                            Defense attempted?
                         </ion-list-header>
                         <ion-item>
-                            <ion-label>Make</ion-label>
-                            <ion-radio value="make"></ion-radio>
+                            <ion-label>(A) {{ defenseA }}</ion-label>
+                            <ion-radio value="A"></ion-radio>
                         </ion-item>
                         <ion-item>
-                            <ion-label>Reach</ion-label>
-                            <ion-radio value="reach"></ion-radio>
+                            <ion-label>(B) {{ defenseB }}</ion-label>
+                            <ion-radio value="B"></ion-radio>
                         </ion-item>
                         <ion-item>
-                            <ion-label>Miss</ion-label>
-                            <ion-radio value="miss"></ion-radio>
+                            <ion-label>(C) {{ defenseC }}</ion-label>
+                            <ion-radio value="C"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>(D) {{ defenseD }}</ion-label>
+                            <ion-radio value="D"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>(E) Lowbar</ion-label>
+                            <ion-radio value="E"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>None</ion-label>
+                            <ion-radio value="N"></ion-radio>
                         </ion-item>
                     </ion-list>
 
-                    <ion-list radio-group>
-                        <ion-list-header>
-                            {{ defenseB }}
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Make</ion-label>
-                            <ion-radio value="make"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Reach</ion-label>
-                            <ion-radio value="reach"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Miss</ion-label>
-                            <ion-radio value="miss"></ion-radio>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-list radio-group>
-                        <ion-list-header>
-                            {{ defenseC }}
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Make</ion-label>
-                            <ion-radio value="make"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Reach</ion-label>
-                            <ion-radio value="reach"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Miss</ion-label>
-                            <ion-radio value="miss"></ion-radio>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-list radio-group>
-                        <ion-list-header>
-                            {{ defenseD }}
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Make</ion-label>
-                            <ion-radio value="make"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Reach</ion-label>
-                            <ion-radio value="reach"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Miss</ion-label>
-                            <ion-radio value="miss"></ion-radio>
-                        </ion-item>
-                    </ion-list>
+                    <ion-item>
+                        <ion-label>Successful</ion-label>
+                        <ion-checkbox [(ngModel)]="autonomousSuccessful" [disabled]="autonomousDefense === 'N'"></ion-checkbox>
+                    </ion-item>
                 </ion-card-content>
             </ion-card>
         </div>
@@ -237,8 +200,9 @@
                 </ion-card-header>
                 <ion-card-content>
                     <button secondary (click)="makeQR()">Make QR</button>
+                    <!-- TODO: add an errors div here -->
                     <canvas id="qrCode">
-                        
+
                     </canvas>
                 </ion-card-content>
             </ion-card>
