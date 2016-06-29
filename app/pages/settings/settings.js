@@ -17,18 +17,28 @@ export class SettingsPage {
         this.storage = new Storage(SqlStorage);
 
         this.storage.query("CREATE TABLE IF NOT EXISTS eventteams (number INTEGER PRIMARY KEY, nickname TEXT, website TEXT)").then(data => {
-            console.log("TABLE CREATED -> " + JSON.stringify(data.res));
+
         }, error => {
             console.log("create error -> " + JSON.stringify(error.err));
         });
 
-        this.teamsLoaded = false;
         this.allTeams = [];
 
-        this.loadFromDb();
+        this.eventCode = false;
+
+        this.storage.get("eventCode").then(value => {
+            if(value !== "false" && value !== undefined) {
+                this.eventCode = value;
+                this.loadFromDb();
+            }
+        });
 
         this.storage.get("isMaster").then(value => {
             this.isMaster = (value === undefined) ? false : value;
+        });
+
+        this.storage.get("hasPitScouting").then(value => {
+            this.hasPitScouting = (value === undefined) ? false : value;
         });
 
         this.storage.get("scout").then(value => {
@@ -50,7 +60,6 @@ export class SettingsPage {
                         website: decodeURIComponent(data.res.rows.item(i).website)
                     });
                 }
-                this.teamsLoaded = true;
                 document.getElementById("addChangeEvent").innerHTML = "Change event";
             }
         }, error => {
@@ -132,9 +141,7 @@ export class SettingsPage {
             buttons: [
                 {
                     text: "Cancel",
-                    handler: data => {
-
-                    }
+                    handler: data => {}
                 },
                 {
                     text: "Add",
@@ -143,12 +150,19 @@ export class SettingsPage {
 
                         if(this.isValidEventCode(eventCode)) { // it fits the format
                             this.http.get(this.makeUrl(eventCode)).subscribe(data => { // HTTP GET from the BlueAllianceAPI
-                                this.removeEventCode();
+                                this.clearDb();
+
                                 let teams = data.json();
-                                for(let team of teams) {
-                                    this.addTeamToDb(team.team_number, team.nickname, team.website);
+
+                                // for some reason, a for-of loop doesn't work here
+                                for(let i = 0; i < teams.length; i++) {
+                                    this.addTeamToDb(teams[i].team_number, teams[i].nickname, teams[i].website);
                                 }
+
                                 this.loadFromDb();
+
+                                this.eventCode = eventCode;
+                                this.updateStorage("eventCode");
                             }, error => { // not a recognized event code (404) or no internet connection
                                 this.onInvalidCode(eventCode);
                             });
@@ -163,14 +177,18 @@ export class SettingsPage {
         this.nav.present(prompt);
     }
 
-    removeEventCode() {
-
+    clearDb() {
         this.storage.query("DELETE FROM eventteams").then(data => {
             this.allTeams = [];
-            this.teamsLoaded = false;
             document.getElementById("addChangeEvent").innerHTML = "Add event";
         }, error => {
             console.log("delete error -> " + JSON.stringify(error.err));
         });
+    }
+
+    removeEventCode() {
+        this.clearDb();
+        this.eventCode = false;
+        this.updateStorage("eventCode");
     }
 }

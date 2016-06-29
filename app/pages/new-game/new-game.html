@@ -4,20 +4,21 @@
     </ion-title>
 </ion-navbar>
 
+<ion-toolbar>
+    <ion-segment [(ngModel)]="gameMode">
+        <ion-segment-button value="pre">
+            Pregame
+        </ion-segment-button>
+        <ion-segment-button value="during">
+            During
+        </ion-segment-button>
+        <ion-segment-button value="post">
+            Post
+        </ion-segment-button>
+    </ion-segment>
+</ion-toolbar>
+
 <ion-content class="new-game">
-    <div padding>
-        <ion-segment [(ngModel)]="gameMode">
-            <ion-segment-button value="pre">
-                Pregame
-            </ion-segment-button>
-            <ion-segment-button value="during">
-                During
-            </ion-segment-button>
-            <ion-segment-button value="post">
-                Post
-            </ion-segment-button>
-        </ion-segment>
-    </div>
 
     <div [ngSwitch]="gameMode">
         <div *ngSwitchWhen="'pre'">

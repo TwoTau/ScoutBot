@@ -24,6 +24,8 @@ export class NewGamePage {
             this.scout = (name === undefined) ? "Scout" : name;
         });
 
+        this.allTeams = [];
+
         this.teamNumber;
 
         this.foul = false;
@@ -37,6 +39,27 @@ export class NewGamePage {
         this.autonomousDefense = "N";
 
         this.autonomousSuccessful = false;
+    }
+
+    loadTeamsFromDb() {
+        this.storage.query("CREATE TABLE IF NOT EXISTS eventteams (number INTEGER PRIMARY KEY, nickname TEXT, website TEXT)").then(data => {}, error => {
+            console.log("create error -> " + JSON.stringify(error.err));
+        });
+
+        this.storage.query("SELECT * FROM eventteams").then(data => {
+            if(data.res.rows.length > 0) {
+                for(let i = 0; i < data.res.rows.length; i++) {
+                    this.allTeams.push({
+                        number: data.res.rows.item(i).number,
+                        name: unescape(data.res.rows.item(i).nickname),
+                        website: decodeURIComponent(data.res.rows.item(i).website)
+                    });
+                }
+                document.getElementById("addChangeEvent").innerHTML = "Change event";
+            }
+        }, error => {
+            console.log("select error -> " + JSON.stringify(error.err));
+        });
     }
 
     makeQR() {

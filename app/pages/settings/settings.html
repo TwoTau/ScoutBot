@@ -11,6 +11,10 @@
         </ion-card-header>
         <ion-card-content>
             <ion-item>
+                <ion-label>Have pit scouting</ion-label>
+                <ion-toggle [(ngModel)]="hasPitScouting" (change)="updateStorage('hasPitScouting')"></ion-toggle>
+            </ion-item>
+            <ion-item>
                 <ion-label>Is master</ion-label>
                 <ion-toggle [(ngModel)]="isMaster" (change)="updateStorage('isMaster')"></ion-toggle>
             </ion-item>
@@ -37,7 +41,7 @@
         </ion-card-header>
         <ion-card-content>
             <button id="addChangeEvent" secondary (click)="askForEventCode()">Add event</button>
-            <button *ngIf="teamsLoaded" danger (click)="removeEventCode()">Remove event</button>
+            <button *ngIf="eventCode !== undefined && eventCode !== false" danger (click)="removeEventCode()">Remove event {{ eventCode }}</button>
             <table id="eventInfo">
                 <tr *ngFor="let team of allTeams">
                     <td>{{ team.number}}</td>
