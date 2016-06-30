@@ -26,7 +26,14 @@ export class NewGamePage {
 
         this.allTeams = [];
 
+        this.storage.get("eventCode").then(value => {
+            if(value !== "false" && value !== undefined) {
+                this.loadTeamsFromDb();
+            }
+        });
+
         this.teamNumber;
+        this.teamName = "???";
 
         this.foul = false;
         this.deadBot = false;
@@ -51,15 +58,23 @@ export class NewGamePage {
                 for(let i = 0; i < data.res.rows.length; i++) {
                     this.allTeams.push({
                         number: data.res.rows.item(i).number,
-                        name: unescape(data.res.rows.item(i).nickname),
-                        website: decodeURIComponent(data.res.rows.item(i).website)
+                        name: unescape(data.res.rows.item(i).nickname)
                     });
                 }
-                document.getElementById("addChangeEvent").innerHTML = "Change event";
             }
         }, error => {
             console.log("select error -> " + JSON.stringify(error.err));
         });
+    }
+
+    unescape(escapedName) {
+        return escapedName.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39/g, "'");
+    }
+
+    changeTeamName() {
+        // allTeams stores team numbers as integers but this.teamNumber is a string
+        let team = this.allTeams.find(team => team.number === +this.teamNumber);
+        this.teamName = team !== undefined ? team.name : "???";
     }
 
     makeQR() {
