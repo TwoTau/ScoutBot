@@ -46,6 +46,43 @@ export class NewGamePage {
         this.autonomousDefense = "N";
 
         this.autonomousSuccessful = false;
+
+        this.defenseAMisses = 0;
+        this.defenseAMakes = 0;
+        this.defenseBMisses = 0;
+        this.defenseBMakes = 0;
+        this.defenseCMisses = 0;
+        this.defenseCMakes = 0;
+        this.defenseDMisses = 0;
+        this.defenseDMakes = 0;
+
+        this.ballGrabbed = false;
+
+        this.defenses = {
+            a: {
+                name: "Portcullis / Cheval de Frise",
+                makes: 0,
+                misses: 0
+            },
+            b: {
+                name: "Moat / Ramparts",
+                makes: 0,
+                misses: 0
+            },
+            c: {
+                name: "Drawbridge / Sally Port",
+                makes: 0,
+                misses: 0
+            },
+            d: {
+                name: "Rock Wall / Rough Terrain",
+                makes: 0,
+                misses: 0
+            },
+            e: {
+                name: "Lowbar"
+            }
+        };
     }
 
     loadTeamsFromDb() {
@@ -77,6 +114,14 @@ export class NewGamePage {
         this.teamName = team !== undefined ? team.name : "???";
     }
 
+    incrementDefense(groupLetter, makesOrMisses) {
+        if(this.defenses[groupLetter][makesOrMisses] < 99) this.defenses[groupLetter][makesOrMisses]++;
+    }
+
+    decrementDefense(groupLetter, makesOrMisses) {
+        if(this.defenses[groupLetter][makesOrMisses] > 0) this.defenses[groupLetter][makesOrMisses]--;
+    }
+
     makeQR() {
         if(this.defenseA === "Portcullis / Cheval de Frise") {
             return this.notFilledOutError("Defense A", "Pregame");
@@ -105,6 +150,10 @@ export class NewGamePage {
         this.nav.present(alert);
     }
 
+    boolToBin(booleanValue) {
+        return booleanValue ? 1 : 0;
+    }
+
     getText() {
 
         let scoutInfo = {
@@ -113,18 +162,30 @@ export class NewGamePage {
             name: this.scout
         };
 
-        let defenseA = this.defenseA === "Portcullis" ? 0 : 1;
-        let defenseB = this.defenseB === "Moat" ? 0 : 1;
-        let defenseC = this.defenseC === "Drawbridge" ? 0 : 1;
-        let defenseD = this.defenseD === "Rock Wall" ? 0 : 1;
+        let foul = this.foul ? 1 : 0;
+        let deadBot = this.deadBot ? 1 : 0;
+
+        let autonomousSuccessful = this.autonomousSuccessful ? 1 : 0;
+
+        let defenseA = this.boolToBin(this.defenseA === "Cheval de Frise");
+        let defenseB = this.boolToBin(this.defenseB === "Ramparts");
+        let defenseC = this.boolToBin(this.defenseC === "Sally Port");
+        let defenseD = this.boolToBin(this.defenseD === "Rough Terrain");
+
+        let ballGrabbed = this.ballGrabbed ? 1 : 0;
 
         let stuff = [
             scoutInfo.color + scoutInfo.number,
             scoutInfo.name,
+            foul,
+            deadBot,
             defenseA,
             defenseB,
             defenseC,
-            defenseD
+            defenseD,
+            autonomousDefense,
+            autonomousSuccessful,
+            ballGrabbed
         ];
         console.log(stuff.join(","));
         return stuff.join(",");

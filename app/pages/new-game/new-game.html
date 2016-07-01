@@ -57,7 +57,7 @@
                     Defenses Against
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-list radio-group [(ngModel)]="defenseA">
+                    <ion-list radio-group [(ngModel)]="defenses.a.name">
                         <ion-list-header>
                             Defense A
                         </ion-list-header>
@@ -71,7 +71,7 @@
                         </ion-item>
                     </ion-list>
 
-                    <ion-list radio-group [(ngModel)]="defenseB">
+                    <ion-list radio-group [(ngModel)]="defenses.b.name">
                         <ion-list-header>
                             Defense B
                         </ion-list-header>
@@ -85,7 +85,7 @@
                         </ion-item>
                     </ion-list>
 
-                    <ion-list radio-group [(ngModel)]="defenseC">
+                    <ion-list radio-group [(ngModel)]="defenses.c.name">
                         <ion-list-header>
                             Defense C
                         </ion-list-header>
@@ -99,7 +99,7 @@
                         </ion-item>
                     </ion-list>
 
-                    <ion-list radio-group [(ngModel)]="defenseD">
+                    <ion-list radio-group [(ngModel)]="defenses.d.name">
                         <ion-list-header>
                             Defense D
                         </ion-list-header>
@@ -119,32 +119,16 @@
         <div *ngSwitchWhen="'during'">
             <ion-card>
                 <ion-card-header>
-                    Autonomous
+                    Autonomous Defenses
                 </ion-card-header>
                 <ion-card-content>
                     <ion-list radio-group [(ngModel)]="autonomousDefense">
                         <ion-list-header>
                             Defense attempted?
                         </ion-list-header>
-                        <ion-item>
-                            <ion-label>(A) {{ defenseA }}</ion-label>
-                            <ion-radio value="A"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>(B) {{ defenseB }}</ion-label>
-                            <ion-radio value="B"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>(C) {{ defenseC }}</ion-label>
-                            <ion-radio value="C"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>(D) {{ defenseD }}</ion-label>
-                            <ion-radio value="D"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>(E) Lowbar</ion-label>
-                            <ion-radio value="E"></ion-radio>
+                        <ion-item *ngFor="let groupLetter of ['a','b','c','d','e']">
+                            <ion-label>({{ groupLetter.toUpperCase() }}) {{ defenses[groupLetter].name }}</ion-label>
+                            <ion-radio value="{{ groupLetter.toUpperCase() }}"></ion-radio>
                         </ion-item>
                         <ion-item>
                             <ion-label>None</ion-label>
@@ -156,6 +140,35 @@
                         <ion-label>Successful</ion-label>
                         <ion-checkbox [(ngModel)]="autonomousSuccessful" [disabled]="autonomousDefense === 'N'"></ion-checkbox>
                     </ion-item>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    Autonomous Shooting
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Ball grabbed</ion-label>
+                        <ion-checkbox [(ngModel)]="ballGrabbed"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card *ngFor="let groupLetter of ['a','b','c','d']">
+                <ion-card-header>
+                    Teleop {{ defenses[groupLetter].name }}
+                </ion-card-header>
+                <ion-card-content>
+                    Makes:
+                    <button danger (click)="decrementDefense(groupLetter,'makes')">-</button>
+                    {{ defenses[groupLetter].makes }}
+                    <button primary (click)="incrementDefense(groupLetter,'makes')">+</button>
+                    <br>
+                    Misses:
+                    <button danger (click)="decrementDefense(groupLetter,'misses')">-</button>
+                    {{ defenses[groupLetter].misses }}
+                    <button primary (click)="incrementDefense(groupLetter,'misses')">+</button>
                 </ion-card-content>
             </ion-card>
         </div>
