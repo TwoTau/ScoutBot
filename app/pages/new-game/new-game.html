@@ -29,12 +29,9 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Team number</ion-label>
-                        <ion-input type="number" placeholder="e.x. 2976" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
+                        <ion-input type="number" placeholder="e.x. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
                     </ion-item>
-                    <div [innerHTML]="teamName">
-
-                    </div>
-                    <!-- <span [(ngModel)]="teamName"></span> -->
+                    <span [innerHTML]="teamName"></span>
                 </ion-card-content>
             </ion-card>
             <ion-card>

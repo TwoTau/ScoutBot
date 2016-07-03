@@ -38,23 +38,9 @@ export class NewGamePage {
         this.foul = false;
         this.deadBot = false;
 
-        this.defenseA = "Portcullis / Cheval de Frise";
-        this.defenseB = "Moat / Ramparts";
-        this.defenseC = "Drawbridge / Sally Port";
-        this.defenseD = "Rock Wall / Rough Terrain";
-
         this.autonomousDefense = "N";
 
         this.autonomousSuccessful = false;
-
-        this.defenseAMisses = 0;
-        this.defenseAMakes = 0;
-        this.defenseBMisses = 0;
-        this.defenseBMakes = 0;
-        this.defenseCMisses = 0;
-        this.defenseCMakes = 0;
-        this.defenseDMisses = 0;
-        this.defenseDMakes = 0;
 
         this.ballGrabbed = false;
 
@@ -82,6 +68,18 @@ export class NewGamePage {
             e: {
                 name: "Lowbar"
             }
+        };
+
+        this.roles = {
+            highShooting: false,
+            lowShooting: false,
+            breaching: false,
+            defending: false
+        };
+
+        this.endgame = {
+            challengedTower: false,
+            scaled: false
         };
     }
 
@@ -123,13 +121,13 @@ export class NewGamePage {
     }
 
     makeQR() {
-        if(this.defenseA === "Portcullis / Cheval de Frise") {
+        if(this.defenses.a.name === "Portcullis / Cheval de Frise") {
             return this.notFilledOutError("Defense A", "Pregame");
-        } if(this.defenseB === "Moat / Ramparts") {
+        } if(this.defenses.b.name === "Moat / Ramparts") {
             return this.notFilledOutError("Defense B", "Pregame");
-        } if(this.defenseC === "Drawbridge / Sally Port") {
+        } if(this.defenses.c.name === "Drawbridge / Sally Port") {
             return this.notFilledOutError("Defense C", "Pregame");
-        } if(this.defenseD === "Rock Wall / Rough Terrain") {
+        } if(this.defenses.d.name === "Rock Wall / Rough Terrain") {
             return this.notFilledOutError("Defense D", "Pregame");
         }
         qr.canvas({
@@ -162,28 +160,44 @@ export class NewGamePage {
             name: this.scout
         };
 
-        let foul = this.foul ? 1 : 0;
-        let deadBot = this.deadBot ? 1 : 0;
+        let foul = this.boolToBin(this.foul);
+        let deadBot = this.boolToBin(this.deadBot);
 
-        let autonomousSuccessful = this.autonomousSuccessful ? 1 : 0;
+        let autonomousSuccessful = this.boolToBin(this.autonomousSuccessful);
 
-        let defenseA = this.boolToBin(this.defenseA === "Cheval de Frise");
-        let defenseB = this.boolToBin(this.defenseB === "Ramparts");
-        let defenseC = this.boolToBin(this.defenseC === "Sally Port");
-        let defenseD = this.boolToBin(this.defenseD === "Rough Terrain");
+        let defenseA = {
+            name: this.boolToBin(this.defenses.a.name === "Cheval de Frise"),
+            makes: defenses.a.makes,
+            misses: defenses.a.misses
+        };
+        let defenseB = {
+            name: this.boolToBin(this.defenses.b.name === "Ramparts"),
+            makes: defenses.b.makes,
+            misses: defenses.b.misses
+        };
+        let defenseC = {
+            name: this.boolToBin(this.defenses.c.name === "Sally Port"),
+            makes: defenses.c.makes,
+            misses: defenses.c.misses
+        };
+        let defenseD = {
+            name: this.boolToBin(this.defenses.d.name === "Rough Terrain"),
+            makes: defenses.d.makes,
+            misses: defenses.d.misses
+        };
 
-        let ballGrabbed = this.ballGrabbed ? 1 : 0;
+        let ballGrabbed = this.boolToBin(this.ballGrabbed);
 
         let stuff = [
             scoutInfo.color + scoutInfo.number,
             scoutInfo.name,
             foul,
             deadBot,
-            defenseA,
-            defenseB,
-            defenseC,
-            defenseD,
-            autonomousDefense,
+            defenseA.name,
+            defenseB.name,
+            defenseC.name,
+            defenseD.name,
+            this.autonomousDefense,
             autonomousSuccessful,
             ballGrabbed
         ];
