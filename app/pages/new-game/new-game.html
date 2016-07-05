@@ -54,59 +54,17 @@
                     Defenses Against
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-list radio-group [(ngModel)]="defenses.a.name">
+                    <ion-list radio-group *ngFor="let defenseGroup of [{letter:'a',op1:'Portcullis',op2:'Cheval de Frise'},{letter:'b',op1:'Moat',op2:'Ramparts'},{letter:'c',op1:'Drawbridge',op2:'Sally Port'},{letter:'d',op1:'Rock Wall',op2:'Rough Terrain'}]" [(ngModel)]="defenses[defenseGroup.letter].name">
                         <ion-list-header>
-                            Defense A
+                            Defense {{ defenseGroup.letter.toUpperCase() }}
                         </ion-list-header>
                         <ion-item>
-                            <ion-label>Portcullis</ion-label>
-                            <ion-radio value="Portcullis"></ion-radio>
+                            <ion-label>{{ defenseGroup.op1 }}</ion-label>
+                            <ion-radio value="{{ defenseGroup.op1 }}"></ion-radio>
                         </ion-item>
                         <ion-item>
-                            <ion-label>Cheval de Frise</ion-label>
-                            <ion-radio value="Cheval de Frise"></ion-radio>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-list radio-group [(ngModel)]="defenses.b.name">
-                        <ion-list-header>
-                            Defense B
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Moat</ion-label>
-                            <ion-radio value="Moat"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Ramparts</ion-label>
-                            <ion-radio value="Ramparts"></ion-radio>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-list radio-group [(ngModel)]="defenses.c.name">
-                        <ion-list-header>
-                            Defense C
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Drawbridge</ion-label>
-                            <ion-radio value="Drawbridge"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Sally Port</ion-label>
-                            <ion-radio value="Sally Port"></ion-radio>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-list radio-group [(ngModel)]="defenses.d.name">
-                        <ion-list-header>
-                            Defense D
-                        </ion-list-header>
-                        <ion-item>
-                            <ion-label>Rock Wall</ion-label>
-                            <ion-radio value="Rock Wall"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>Rough Terrain</ion-label>
-                            <ion-radio value="Rough Terrain"></ion-radio>
+                            <ion-label>{{ defenseGroup.op2 }}</ion-label>
+                            <ion-radio value="{{ defenseGroup.op2 }}"></ion-radio>
                         </ion-item>
                     </ion-list>
                 </ion-card-content>
@@ -178,19 +136,19 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>High shooting</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="roles.highShooting"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>Low shooting</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="roles.lowShooting"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>Breaching</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="roles.breaching"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>Defending</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="roles.defending"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -201,11 +159,11 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Challenged tower</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="endgame.challengedTower"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>Scaled</ion-label>
-                        <ion-checkbox></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="endgame.scaled"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
