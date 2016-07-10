@@ -56,7 +56,7 @@ export class SettingsPage {
                 for(let i = 0; i < data.res.rows.length; i++) {
                     this.allTeams.push({
                         number: data.res.rows.item(i).number,
-                        name: unescape(data.res.rows.item(i).nickname),
+                        name: this.unescape(data.res.rows.item(i).nickname),
                         website: decodeURIComponent(data.res.rows.item(i).website)
                     });
                 }
@@ -75,7 +75,7 @@ export class SettingsPage {
         });
     }
 
-    // NOTE: SqlStorage will set the value as a string, so all numbers or booleans are stringified 
+    // NOTE: SqlStorage will set the value as a string, so all numbers or booleans are stringified
     updateStorage(key) {
         console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
         this.storage.set(key, this[key]);

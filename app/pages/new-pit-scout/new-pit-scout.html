@@ -1,0 +1,27 @@
+<ion-navbar *navbar>
+  <ion-title>New Pit Scout</ion-title>
+</ion-navbar>
+
+<ion-content class="new-pit-scout">
+    <ion-card>
+        <ion-card-header>
+            General
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item>
+                <ion-label>Team number</ion-label>
+                <ion-input type="number" placeholder="e.x. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
+            </ion-item>
+            <span [innerHTML]="teamName"></span>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Save
+        </ion-card-header>
+        <ion-card-content>
+            <button secondary (click)="saveData()">Save Data</button>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

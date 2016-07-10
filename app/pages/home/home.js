@@ -4,6 +4,7 @@ import {SettingsPage} from '../settings/settings';
 import {NewGamePage} from '../new-game/new-game';
 import {SavedCodesPage} from '../saved-codes/saved-codes';
 import {ScannedCodesPage} from '../scanned-codes/scanned-codes';
+import {NewPitScoutPage} from '../new-pit-scout/new-pit-scout';
 
 @Page({
     templateUrl: 'build/pages/home/home.html'
@@ -22,6 +23,7 @@ export class HomePage {
 
         this.settings = SettingsPage;
         this.newGame = NewGamePage;
+        this.newPitScout = NewPitScoutPage;
         this.savedQRs = SavedCodesPage;
         this.scannedQRs = ScannedCodesPage;
     }
@@ -42,7 +44,7 @@ export class HomePage {
     }
 
     makeNewPitScout() {
-
+        this.nav.push(NewPitScoutPage);
     }
 
     goToSavedCodes() {
