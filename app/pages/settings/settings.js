@@ -75,6 +75,7 @@ export class SettingsPage {
         });
     }
 
+    // NOTE: SqlStorage will set the value as a string, so all numbers or booleans are stringified 
     updateStorage(key) {
         console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
         this.storage.set(key, this[key]);

@@ -131,6 +131,21 @@
         <div *ngSwitchWhen="'post'">
             <ion-card>
                 <ion-card-header>
+                    Endgame
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Challenged tower</ion-label>
+                        <ion-checkbox [(ngModel)]="endgame.challengedTower"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Scaled</ion-label>
+                        <ion-checkbox [(ngModel)]="endgame.scaled"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+            <ion-card>
+                <ion-card-header>
                     Roles
                 </ion-card-header>
                 <ion-card-content>
@@ -149,21 +164,6 @@
                     <ion-item>
                         <ion-label>Defending</ion-label>
                         <ion-checkbox [(ngModel)]="roles.defending"></ion-checkbox>
-                    </ion-item>
-                </ion-card-content>
-            </ion-card>
-            <ion-card>
-                <ion-card-header>
-                    Endgame
-                </ion-card-header>
-                <ion-card-content>
-                    <ion-item>
-                        <ion-label>Challenged tower</ion-label>
-                        <ion-checkbox [(ngModel)]="endgame.challengedTower"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Scaled</ion-label>
-                        <ion-checkbox [(ngModel)]="endgame.scaled"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>

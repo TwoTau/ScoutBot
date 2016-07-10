@@ -39,7 +39,6 @@ export class NewGamePage {
         this.deadBot = false;
 
         this.autonomousDefense = "N";
-
         this.autonomousSuccessful = false;
 
         this.ballGrabbed = false;
@@ -70,6 +69,11 @@ export class NewGamePage {
             }
         };
 
+        this.endgame = {
+            challengedTower: false,
+            scaled: false
+        };
+
         this.roles = {
             highShooting: false,
             lowShooting: false,
@@ -77,10 +81,6 @@ export class NewGamePage {
             defending: false
         };
 
-        this.endgame = {
-            challengedTower: false,
-            scaled: false
-        };
     }
 
     loadTeamsFromDb() {

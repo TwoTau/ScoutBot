@@ -9,7 +9,11 @@
         <ion-icon name="add"></ion-icon>
         New
     </button>
-    <button (click)="scanQR()">
+    <button (click)="makeNewPitScout()" *ngIf="includePitScouting">
+        <ion-icon name="add-circle"></ion-icon>
+        Pit Scout
+    </button>
+    <button (click)="scanQR()" *ngIf="isMaster">
         <ion-icon name="camera"></ion-icon>
         Decode
     </button>
@@ -17,9 +21,9 @@
         <ion-icon name="clipboard"></ion-icon>
         Saved QRs
     </button>
-    <button light>
+    <button light (click)="goToScannedCodes()" *ngIf="isMaster">
         <ion-icon name="archive"></ion-icon>
-        Scanned
+        Scanned QRs
     </button>
     <button dark (click)="goToSettings()">
         <ion-icon name="settings"></ion-icon>
