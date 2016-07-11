@@ -41,7 +41,9 @@ export class NewGamePage {
         this.autonomousDefense = "N";
         this.autonomousSuccessful = false;
 
-        this.ballGrabbed = false;
+        this.autoBallGrabbed = false;
+        this.autoHighGoal = false;
+        this.autoLowGoal = false;
 
         this.defenses = {
             a: {
@@ -65,7 +67,19 @@ export class NewGamePage {
                 misses: 0
             },
             e: {
-                name: "Lowbar"
+                name: "Lowbar",
+                made: false
+            }
+        };
+
+        this.goals = {
+            high: {
+                makes: 0,
+                misses: 0
+            },
+            low: {
+                makes: 0,
+                misses: 0
             }
         };
 
@@ -113,11 +127,17 @@ export class NewGamePage {
     }
 
     incrementDefense(groupLetter, makesOrMisses) {
-        if(this.defenses[groupLetter][makesOrMisses] < 99) this.defenses[groupLetter][makesOrMisses]++;
+        if(this.defenses[groupLetter][makesOrMisses] < 35) this.defenses[groupLetter][makesOrMisses]++;
     }
-
     decrementDefense(groupLetter, makesOrMisses) {
         if(this.defenses[groupLetter][makesOrMisses] > 0) this.defenses[groupLetter][makesOrMisses]--;
+    }
+
+    incrementGoal(highOrLow, makesOrMisses) {
+        if(this.goals[highOrLow][makesOrMisses] < 35) this.goals[highOrLow][makesOrMisses]++;
+    }
+    decrementGoal(highOrLow, makesOrMisses) {
+        if(this.goals[highOrLow][makesOrMisses] > 0) this.goals[highOrLow][makesOrMisses]--;
     }
 
     makeQR() {
@@ -148,8 +168,20 @@ export class NewGamePage {
         this.nav.present(alert);
     }
 
+    // Returns a string
     boolToBin(booleanValue) {
-        return booleanValue ? 1 : 0;
+        return booleanValue ? "1" : "0";
+    }
+
+    // Returns a hexadecimal string
+    binToHex(binaryString) {
+        return parseInt(binaryString, 2).toString(16);
+    }
+
+    // Parameter base10Num can be either a string or an integer
+    // Returns a base 36 string
+    decToBase36(base10Num) {
+        return parseInt(base10Num, 10).toString(36);
     }
 
     getText() {
@@ -163,45 +195,88 @@ export class NewGamePage {
         let foul = this.boolToBin(this.foul);
         let deadBot = this.boolToBin(this.deadBot);
 
-        let autonomousSuccessful = this.boolToBin(this.autonomousSuccessful);
-
         let defenseA = {
             name: this.boolToBin(this.defenses.a.name === "Cheval de Frise"),
-            makes: defenses.a.makes,
-            misses: defenses.a.misses
+            makes: this.decToBase36(this.defenses.a.makes),
+            misses: this.decToBase36(this.defenses.a.misses)
         };
         let defenseB = {
             name: this.boolToBin(this.defenses.b.name === "Ramparts"),
-            makes: defenses.b.makes,
-            misses: defenses.b.misses
+            makes: this.decToBase36(this.defenses.b.makes),
+            misses: this.decToBase36(this.defenses.b.misses)
         };
         let defenseC = {
             name: this.boolToBin(this.defenses.c.name === "Sally Port"),
-            makes: defenses.c.makes,
-            misses: defenses.c.misses
+            makes: this.decToBase36(this.defenses.c.makes),
+            misses: this.decToBase36(this.defenses.c.misses)
         };
         let defenseD = {
             name: this.boolToBin(this.defenses.d.name === "Rough Terrain"),
-            makes: defenses.d.makes,
-            misses: defenses.d.misses
+            makes: this.decToBase36(this.defenses.d.makes),
+            misses: this.decToBase36(this.defenses.d.misses)
         };
 
-        let ballGrabbed = this.boolToBin(this.ballGrabbed);
+        let autonomousDefense = "N";
+        if(this.autonomousDefense === "A") autonomousDefense = 0;
+        if(this.autonomousDefense === "B") autonomousDefense = 2;
+        if(this.autonomousDefense === "C") autonomousDefense = 4;
+        if(this.autonomousDefense === "D") autonomousDefense = 6;
+        if(this.autonomousDefense === "E") autonomousDefense = 8;
+        if(this.autonomousSuccessful) autonomousDefense++;
 
-        let stuff = [
-            scoutInfo.color + scoutInfo.number,
-            scoutInfo.name,
-            foul,
-            deadBot,
-            defenseA.name,
-            defenseB.name,
-            defenseC.name,
-            defenseD.name,
-            this.autonomousDefense,
-            autonomousSuccessful,
-            ballGrabbed
-        ];
-        console.log(stuff.join(","));
-        return stuff.join(",");
+        let autoBallGrabbed = this.boolToBin(this.autoBallGrabbed);
+        let autoHighGoal = this.boolToBin(this.autoHighGoal);
+        let autoLowGoal = this.boolToBin(this.autoLowGoal);
+
+        let lowbarMade = this.boolToBin(this.defenses.e.made);
+
+        let teleopHighGoal = {
+            makes: this.decToBase36(this.goals.high.makes),
+            misses: this.decToBase36(this.goals.high.misses)
+        };
+
+        let teleopLowGoal = {
+            makes: this.decToBase36(this.goals.low.makes),
+            misses: this.decToBase36(this.goals.low.misses)
+        };
+
+        let endgame = {
+            challengedTower: this.boolToBin(this.endgame.challengedTower),
+            scaled: this.boolToBin(this.endgame.scaled)
+        };
+
+        let roles = {
+            highShooting: this.boolToBin(this.roles.highShooting),
+            lowShooting: this.boolToBin(this.roles.lowShooting),
+            breaching: this.boolToBin(this.roles.breaching),
+            defending: this.boolToBin(this.roles.defending)
+        };
+
+        let final = this.teamNumber + "" +
+        (scoutInfo.color + scoutInfo.number) +
+        scoutInfo.name +
+        "@" +
+        this.binToHex(foul + deadBot) +
+        this.binToHex(defenseA.name + defenseB.name + defenseC.name + defenseD.name) +
+        autonomousDefense +
+        this.binToHex(autoBallGrabbed + autoHighGoal + autoLowGoal) +
+        defenseA.makes +
+        defenseA.misses +
+        defenseB.makes +
+        defenseB.misses +
+        defenseC.makes +
+        defenseC.misses +
+        defenseD.makes +
+        defenseD.misses +
+        lowbarMade +
+        teleopHighGoal.makes +
+        teleopHighGoal.misses +
+        teleopLowGoal.makes +
+        teleopLowGoal.misses +
+        this.binToHex(endgame.challengedTower + endgame.scaled) +
+        this.binToHex(roles.highShooting + roles.lowShooting + roles.breaching + roles.defending);
+
+        console.log(final);
+        return final;
     }
 }

@@ -105,7 +105,15 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Ball grabbed</ion-label>
-                        <ion-checkbox [(ngModel)]="ballGrabbed"></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="autoBallGrabbed"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>High goal score</ion-label>
+                        <ion-checkbox [(ngModel)]="autoHighGoal"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Low goal score</ion-label>
+                        <ion-checkbox [(ngModel)]="autoLowGoal"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -124,6 +132,52 @@
                     <button danger (click)="decrementDefense(groupLetter,'misses')">-</button>
                     {{ defenses[groupLetter].misses }}
                     <button primary (click)="incrementDefense(groupLetter,'misses')">+</button>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    Teleop Lowbar
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Passed</ion-label>
+                        <ion-checkbox [(ngModel)]="defenses.e.made"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    Teleop High Goals
+                </ion-card-header>
+                <ion-card-content>
+                    Makes:
+                    <button danger (click)="decrementGoal('high','makes')">-</button>
+                    {{ goals.high.makes }}
+                    <button primary (click)="incrementGoal('high','makes')">+</button>
+                    <br>
+                    Misses:
+                    <button danger (click)="decrementGoal('high','misses')">-</button>
+                    {{ goals.high.misses }}
+                    <button primary (click)="incrementGoal('high','misses')">+</button>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    Teleop Low Goals
+                </ion-card-header>
+                <ion-card-content>
+                    Makes:
+                    <button danger (click)="decrementGoal('low','makes')">-</button>
+                    {{ goals.low.makes }}
+                    <button primary (click)="incrementGoal('low','makes')">+</button>
+                    <br>
+                    Misses:
+                    <button danger (click)="decrementGoal('low','misses')">-</button>
+                    {{ goals.low.misses }}
+                    <button primary (click)="incrementGoal('low','misses')">+</button>
                 </ion-card-content>
             </ion-card>
         </div>
