@@ -176,7 +176,7 @@ export class NewGamePage {
     }
 
     getText() {
-        return this.dataService.encode({
+        let text = this.dataService.encode({
             teamNumber: this.teamNumber,
             scoutColorNumber: this.colorNumber,
             scoutName: this.scout,
@@ -192,5 +192,9 @@ export class NewGamePage {
             endgame: this.endgame,
             roles: this.roles
         });
+        console.log("Decoded:");
+        console.log(JSON.stringify(this.dataService.decode(text)));
+        
+        return text;
     }
 }

@@ -5,7 +5,6 @@ import {NewGamePage} from '../new-game/new-game';
 import {SavedCodesPage} from '../saved-codes/saved-codes';
 import {ScannedCodesPage} from '../scanned-codes/scanned-codes';
 import {NewPitScoutPage} from '../new-pit-scout/new-pit-scout';
-import {GameDataService} from '../../providers/game-data-service/game-data-service';
 
 @Page({
     templateUrl: 'build/pages/home/home.html'

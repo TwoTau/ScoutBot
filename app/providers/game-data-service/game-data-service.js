@@ -14,14 +14,24 @@ export class GameDataService {
         this.data = null;
     }
 
+    // Pad the string with 0s at the beginning
+    pad(originalString, desiredLength) {
+        while(originalString.length < desiredLength) {
+            originalString = "0" + originalString;
+        }
+        return originalString;
+    }
+
     // Returns a boolean
     binToBool(binaryString) {
         return binaryString === "1";
     }
 
     // Returns an array of booleans
-    hexToBoolArray(hexString) {
-        let boolArray = parseInt(hexString, 16).toString(2).split("");
+    hexToBoolArray(hexString, numBooleans) {
+        let boolString = parseInt(hexString, 16).toString(2);
+        boolString = this.pad(boolString, numBooleans);
+        let boolArray = boolString.split("");
         for(let i = 0; i < boolArray.length; i++) {
             boolArray[i] = (boolArray[i] === "1");
         }
@@ -50,6 +60,8 @@ export class GameDataService {
 
     // Parameters: teamNumber, scoutColorNumber, scoutName, foul, deadBot, defenses, autonomousDefense, autonomousSuccessful, autoBallGrabbed, autoHighGoal, autoLowGoal, goals, endgame, roles
     encode(options) {
+        let teamNumber = this.pad(options.teamNumber + "", 4);
+
         let scoutInfo = {
             color: options.scoutColorNumber[0] === "R" ? 0 : 3,
             number: +options.scoutColorNumber.slice(-1),
@@ -116,10 +128,8 @@ export class GameDataService {
             defending: this.boolToBin(options.roles.defending)
         };
 
-        let final = options.teamNumber + "" +
+        let final = teamNumber +
         (scoutInfo.color + scoutInfo.number) +
-        scoutInfo.name +
-        "@" +
         this.binToHex(foul + deadBot) +
         this.binToHex(defenseA.name + defenseB.name + defenseC.name + defenseD.name) +
         autonomousDefense +
@@ -138,14 +148,65 @@ export class GameDataService {
         this.decToBase36(teleopLowGoal.makes) +
         this.decToBase36(teleopLowGoal.misses) +
         this.binToHex(endgame.challengedTower + endgame.scaled) +
-        this.binToHex(roles.highShooting + roles.lowShooting + roles.breaching + roles.defending);
+        this.binToHex(roles.highShooting + roles.lowShooting + roles.breaching + roles.defending) +
+        scoutInfo.name;
 
         console.log(final);
         return final;
     }
 
-
     decode(encodedString) {
-        return "Decoded!";
+        let teamNumber = +encodedString.slice(0,4);
+
+        let colorNumberArray = ["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"];
+        let scoutColorNumber = colorNumberArray[+encodedString.slice(4,5) - 1];
+
+        let foulDeadBot = this.hexToBoolArray(encodedString.slice(5, 6), 2);
+        let foul = foulDeadBot[0];
+        let deadBot = foulDeadBot[1];
+
+        let defensesNameArray = this.hexToBoolArray(encodedString.slice(6, 7), 4);
+        let defenses = {
+            a: {
+                name: defensesNameArray[0] ? "Cheval de Frise" : "Portcullis"
+            },
+            b: {
+                name: defensesNameArray[1] ? "Ramparts" : "Moat"
+            },
+            c: {
+                name: defensesNameArray[2] ? "Sally Port" : "Drawbridge"
+            },
+            d: {
+                name: defensesNameArray[3] ? "Rough Terrain" : "Rock Wall"
+            },
+            e: {
+                name: "Lowbar"
+            }
+        };
+
+        let autonomousDefense = encodedString.slice(7, 8);
+        let autonomousSuccessful = false;
+        if(autonomousDefense === "N") {
+            autonomousDefense = "None";
+        } else {
+            let letterArray = ["a", "b", "c", "d", "e"];
+            let autonomousDefenseLetter = letterArray[+autonomousDefense / 2];
+            autonomousDefense = defenses[autonomousDefenseLetter];
+            if(+autonomousDefense % 2 === 1) { // odd
+                autonomousSuccessful = true;
+            }
+        }
+
+        let final = {
+            teamNumber: teamNumber,
+            scoutColorNumber: scoutColorNumber,
+            foul: foul,
+            deadBot: deadBot,
+            defenses: defenses,
+            autonomousDefense: autonomousDefense,
+            autonomousSuccessful: autonomousSuccessful
+        };
+
+        return final;
     }
 }
