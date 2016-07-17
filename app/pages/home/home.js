@@ -5,21 +5,27 @@ import {NewGamePage} from '../new-game/new-game';
 import {SavedCodesPage} from '../saved-codes/saved-codes';
 import {ScannedCodesPage} from '../scanned-codes/scanned-codes';
 import {NewPitScoutPage} from '../new-pit-scout/new-pit-scout';
+import {GameDataService} from '../../providers/game-data-service/game-data-service';
 
 @Page({
-    templateUrl: 'build/pages/home/home.html'
+    templateUrl: 'build/pages/home/home.html',
+    providers: [GameDataService]
 })
 
 export class HomePage {
     static get parameters() {
-        return [[NavController], [NavParams]];
+        return [[NavController], [NavParams], [GameDataService]];
     }
 
-    constructor(nav, navParams) {
+    constructor(nav, navParams, dataService) {
         this.nav = nav;
         this.navParams = navParams;
 
+        this.dataService = dataService;
+
         this.storage = new Storage(SqlStorage);
+
+        this.stuff = ":(";
 
         this.settings = SettingsPage;
         this.newGame = NewGamePage;
@@ -59,13 +65,11 @@ export class HomePage {
 
     scanQR() {
         BarcodeScanner.scan().then(qrData => {
-            console.log(this.decode(qrData));
+            let message = JSON.stringify(this.dataService.decode(qrData.text));
+
+            this.stuff = message;
         }, err => {
             console.log(err);
         });
-    }
-
-    decode(qrData) {
-        return qrData.split(",");
     }
 }

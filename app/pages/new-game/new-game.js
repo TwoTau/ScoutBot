@@ -192,9 +192,9 @@ export class NewGamePage {
             endgame: this.endgame,
             roles: this.roles
         });
-        console.log("Decoded:");
-        console.log(JSON.stringify(this.dataService.decode(text)));
-        
+        console.log("Encoded: " + text);
+        console.log("Decoded: " + JSON.stringify(this.dataService.decode(text)));
+
         return text;
     }
 }

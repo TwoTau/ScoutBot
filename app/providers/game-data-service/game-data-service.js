@@ -4,12 +4,11 @@ import {Injectable} from '@angular/core';
 
 export class GameDataService {
     static get parameters(){
-        return [[Http]]
+        return;
     }
 
-    constructor(http) {
-        this.http = http;
-        this.data = null;
+    constructor() {
+
     }
 
     // Pad the string with 0s at the beginning
@@ -149,7 +148,6 @@ export class GameDataService {
         this.binToHex(roles.highShooting + roles.lowShooting + roles.breaching + roles.defending) +
         scoutInfo.name;
 
-        console.log(final);
         return final;
     }
 
