@@ -1,4 +1,4 @@
-import {Page, NavController, NavParams, Storage, SqlStorage} from 'ionic-angular';
+import {Page, NavController, NavParams, Alert, Toast, Storage, SqlStorage} from 'ionic-angular';
 import {BarcodeScanner} from 'ionic-native';
 import {SettingsPage} from '../settings/settings';
 import {NewGamePage} from '../new-game/new-game';
@@ -25,7 +25,7 @@ export class HomePage {
 
         this.storage = new Storage(SqlStorage);
 
-        this.stuff = ":(";
+        this.createCodesDb();
 
         this.settings = SettingsPage;
         this.newGame = NewGamePage;
@@ -40,6 +40,21 @@ export class HomePage {
         });
         this.storage.get("isMaster").then(value => {
             this.isMaster = (value === "true");
+        });
+    }
+
+    createCodesDb() {
+        this.storage.query("CREATE TABLE IF NOT EXISTS scannedcodes (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT)").then(data => {},
+        error => {
+            console.log("create error -> " + JSON.stringify(error));
+        });
+    }
+
+    addCodeToDb(code) {
+        this.storage.query("INSERT INTO scannedcodes (code) VALUES ('" + code + "')").then(data => {
+
+        }, error => {
+            console.log("insert error -> " + JSON.stringify(error) + " with " + code);
         });
     }
 
@@ -64,12 +79,41 @@ export class HomePage {
     }
 
     scanQR() {
-        BarcodeScanner.scan().then(qrData => {
-            let message = JSON.stringify(this.dataService.decode(qrData.text));
+        if(Math.random() < 0.5) {
+            this.addCodeToDb("13411280400041001130001aScout");
+        } else {
+            this.addCodeToDb("12432280200041001130001cSomeoneElse");
+        }
 
-            this.stuff = message;
+        /*
+        BarcodeScanner.scan().then(result => {
+            if(result.cancelled) {
+                this.nav.present(Toast.create({
+                    message: "Scanning cancelled. No data added.",
+                    duration: 1200
+                }));
+            } else {
+                let qrData = result.text;
+                if(this.dataService.isValid(qrData)) {
+                    let data = this.dataService.decode(qrData);
+
+                    this.addCodeToDb(qrData);
+
+                    this.nav.present(Toast.create({
+                        message: "Successfully added team " + data.teamNumber + ".",
+                        duration: 900
+                    }));
+                } else {
+                    this.nav.present(Alert.create({
+                        title: "Invalid QR Code",
+                        subTitle: "QR code gave: '" + qrData + "', which is not a valid ScoutBot code.",
+                        buttons: ["Dismiss"]
+                    }));
+                }
+            }
         }, err => {
             console.log(err);
         });
+        */
     }
 }

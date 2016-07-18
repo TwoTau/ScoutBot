@@ -1,7 +1,29 @@
 <ion-navbar *navbar>
-  <ion-title>Scanned QRs</ion-title>
+    <ion-title>Scanned QRs</ion-title>
 </ion-navbar>
 
 <ion-content class="scanned-codes">
-
+    <ion-list>
+        <ion-item-sliding *ngFor="let teamData of data">
+            <ion-item>
+                <h2>{{ teamData.teamNumber }} - {{ teamData.scoutName }}</h2>
+                <h3>{{ teamData.teamName }}</h3>
+                <h4>{{ teamData.scannedId }}</h4>
+            </ion-item>
+            <ion-item-options>
+                <button primary (click)="viewMore(teamData.scannedId)">
+                    <ion-icon name="ios-more"></ion-icon>
+                    More
+                </button>
+                <button secondary (click)="viewStats(teamData.scannedId)">
+                    <ion-icon name="stats"></ion-icon>
+                    Edit
+                </button>
+                <button danger (click)="delete(teamData.scannedId)">
+                    <ion-icon name="trash"></ion-icon>
+                    Delete
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
 </ion-content>

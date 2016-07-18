@@ -232,6 +232,8 @@ export class GameDataService {
             defending: rolesArray[3]
         };
 
+        let scoutName = encodedString.slice(24);
+
         let auto = {
             defenseAttempted: autonomousDefense,
             defensesSuccessful: autonomousSuccessful,
@@ -243,6 +245,7 @@ export class GameDataService {
         let final = {
             teamNumber: teamNumber,
             scoutColorNumber: scoutColorNumber,
+            scoutName: scoutName,
             foul: foul,
             deadBot: deadBot,
             defenses: defenses,
@@ -252,5 +255,12 @@ export class GameDataService {
         };
 
         return final;
+    }
+
+    isValid(dataString) {
+        if(dataString.length < 20) {
+            return false;
+        }
+        return true;
     }
 }

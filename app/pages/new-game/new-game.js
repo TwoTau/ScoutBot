@@ -111,7 +111,7 @@ export class NewGamePage {
                 for(let i = 0; i < data.res.rows.length; i++) {
                     this.allTeams.push({
                         number: data.res.rows.item(i).number,
-                        name: unescape(data.res.rows.item(i).nickname)
+                        name: this.unescape(data.res.rows.item(i).nickname)
                     });
                 }
             }
