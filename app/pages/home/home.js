@@ -79,13 +79,13 @@ export class HomePage {
     }
 
     scanQR() {
-        if(Math.random() < 0.5) {
-            this.addCodeToDb("13411280400041001130001aScout");
-        } else {
-            this.addCodeToDb("12432280200041001130001cSomeoneElse");
-        }
+        // FOR TESTING:
+        // if(Math.random() < 0.5) {
+        //     this.addCodeToDb("13411280400041001130001aScout");
+        // } else {
+        //     this.addCodeToDb("12432280200041001130001cSomeoneElse");
+        // }
 
-        /*
         BarcodeScanner.scan().then(result => {
             if(result.cancelled) {
                 this.nav.present(Toast.create({
@@ -114,6 +114,5 @@ export class HomePage {
         }, err => {
             console.log(err);
         });
-        */
     }
 }

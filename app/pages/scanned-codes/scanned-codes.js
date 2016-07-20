@@ -1,4 +1,4 @@
-import {Page, NavController, Storage, SqlStorage} from 'ionic-angular';
+import {Page, NavController, Alert, Storage, SqlStorage} from 'ionic-angular';
 import {GameDataService} from '../../providers/game-data-service/game-data-service';
 
 @Page({
@@ -75,13 +75,29 @@ export class ScannedCodesPage {
 
     viewMore(scannedId) {
         console.log("Viewing more: " + scannedId);
+        this.nav.present(Alert.create({
+            title: "View more",
+            subTitle: "It works.",
+            buttons: ["Dismiss"]
+        }));
     }
 
-    viewStats(scannedId) {
+    editStats(scannedId) {
         console.log("Viewing stats: " + scannedId);
+        this.nav.present(Alert.create({
+            title: "View stats",
+            subTitle: "It works.",
+            buttons: ["Dismiss"]
+        }));
     }
 
     delete(scannedId) {
         console.log("Deleting: " + scannedId);
+        this.storage.query("DELETE FROM scannedcodes WHERE id = " + scannedId).then(data => {
+            console.log("yay deleted " + scannedId + " successfully.");
+            this.data.splice(this.data.indexOf(this.data.find(team => team.scannedId === scannedId)), 1);
+        }, error => {
+            console.log("delete error -> " + JSON.stringify(error.err));
+        });
     }
 }
