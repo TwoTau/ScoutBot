@@ -1,23 +1,26 @@
 import {Page, NavController, Alert, Storage, SqlStorage} from 'ionic-angular';
 import {Http} from '@angular/http';
+import {TeamStorageService} from '../../providers/team-storage-service/team-storage-service';
 
 @Page({
-    templateUrl: 'build/pages/settings/settings.html'
+    templateUrl: 'build/pages/settings/settings.html',
+    providers: [TeamStorageService]
 })
 
 export class SettingsPage {
     static get parameters() {
-        return [[NavController], [Http]];
+        return [[NavController], [Http], [TeamStorageService]];
     }
 
-    constructor(nav, http) {
+    constructor(nav, http, teamService) {
         this.nav = nav;
         this.http = http;
+        this.teamStorageService = teamService;
 
         this.storage = new Storage(SqlStorage);
 
         this.storage.query("CREATE TABLE IF NOT EXISTS eventteams (number INTEGER PRIMARY KEY, nickname TEXT, website TEXT)").then(data => {
-
+            console.log("created from js thing");
         }, error => {
             console.log("create error -> " + JSON.stringify(error.err));
         });
@@ -77,7 +80,7 @@ export class SettingsPage {
 
     // NOTE: SqlStorage will set the value as a string, so all numbers or booleans are stringified
     updateStorage(key) {
-        console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
+        // console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
         this.storage.set(key, this[key]);
     }
 

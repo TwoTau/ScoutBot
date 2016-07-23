@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 
 export class GameDataService {
-    static get parameters(){
+    static get parameters() {
         return;
     }
 
