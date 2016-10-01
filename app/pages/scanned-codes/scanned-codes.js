@@ -22,7 +22,6 @@ export class ScannedCodesPage {
 
         this.data = [];
         this.getCodesFromDb();
-
     }
 
     getCodesFromDb() {

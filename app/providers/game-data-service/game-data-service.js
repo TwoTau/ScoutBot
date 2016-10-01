@@ -196,7 +196,7 @@ export class GameDataService {
         } else {
             let letterArray = ["a","b","c","d","e"];
             let autonomousDefenseLetter = letterArray[+autonomousDefense / 2];
-            autonomousDefense = defenses[autonomousDefenseLetter];
+            autonomousDefense = defenses[autonomousDefenseLetter].name;
             if(+autonomousDefense % 2 === 1) { // odd
                 autonomousSuccessful = true;
             }
@@ -251,10 +251,16 @@ export class GameDataService {
             defenses: defenses,
             auto: auto,
             teleopGoals: teleopGoals,
+            endgame: endgame,
             roles: roles
         };
 
         return final;
+    }
+
+    // actually gives you an object, not a string. do `decodeToString(encoded).stringPart` to get the string
+    decodeToString(decodedObject) {
+        return decodedObject.teamNumber + "," + decodedObject.scoutColorNumber + "," + decodedObject.scoutName + "," + decodedObject.foul + "," + decodedObject.deadBot + "," + decodedObject.defenses.a.name + "," + decodedObject.defenses.a.makes + "," + decodedObject.defenses.a.misses + "," + decodedObject.defenses.b.name + "," + decodedObject.defenses.b.makes + "," + decodedObject.defenses.b.misses + "," + decodedObject.defenses.c.name + "," + decodedObject.defenses.c.makes + "," + decodedObject.defenses.c.misses + "," + decodedObject.defenses.d.name + "," + decodedObject.defenses.d.makes + "," + decodedObject.defenses.d.misses + "," + decodedObject.defenses.e.made + "," + decodedObject.auto.defenseAttempted + "," + decodedObject.auto.defensesSuccessful + "," + decodedObject.auto.ballGrabbed + "," + decodedObject.auto.highGoal + "," + decodedObject.auto.lowGoal + "," + decodedObject.teleopGoals.high.makes + "," + decodedObject.teleopGoals.high.misses + "," + decodedObject.teleopGoals.low.makes + "," + decodedObject.teleopGoals.low.misses + "," + decodedObject.endgame.challengedTower + "," + decodedObject.endgame.scaled + "," + decodedObject.roles.highShooting + "," + decodedObject.roles.lowShooting + "," + decodedObject.roles.breaching + "," + decodedObject.roles.defending;
     }
 
     isValid(dataString) {

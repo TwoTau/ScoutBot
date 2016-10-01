@@ -1,29 +1,26 @@
-import {Page, NavController, Alert, Storage, SqlStorage} from 'ionic-angular';
+import {Page, NavController, Alert, Storage, Toast, SqlStorage} from 'ionic-angular';
 import {Http} from '@angular/http';
+import {File} from 'ionic-native';
 import {TeamStorageService} from '../../providers/team-storage-service/team-storage-service';
+import {GameDataService} from '../../providers/game-data-service/game-data-service';
 
 @Page({
     templateUrl: 'build/pages/settings/settings.html',
-    providers: [TeamStorageService]
+    providers: [TeamStorageService, GameDataService]
 })
 
 export class SettingsPage {
     static get parameters() {
-        return [[NavController], [Http], [TeamStorageService]];
+        return [[NavController], [Http], [TeamStorageService], [GameDataService]];
     }
 
-    constructor(nav, http, teamService) {
+    constructor(nav, http, teamService, dataService) {
         this.nav = nav;
         this.http = http;
         this.teamStorageService = teamService;
+        this.dataService = dataService;
 
         this.storage = new Storage(SqlStorage);
-
-        this.storage.query("CREATE TABLE IF NOT EXISTS eventteams (number INTEGER PRIMARY KEY, nickname TEXT, website TEXT)").then(data => {
-            console.log("created from js thing");
-        }, error => {
-            console.log("create error -> " + JSON.stringify(error.err));
-        });
 
         this.allTeams = [];
 
@@ -32,7 +29,8 @@ export class SettingsPage {
         this.storage.get("eventCode").then(value => {
             if(value !== "false" && value !== undefined) {
                 this.eventCode = value;
-                this.loadFromDb();
+                this.allTeams = this.teamStorageService.getTeams();
+                document.getElementById("addChangeEvent").innerHTML = "Change event";
             }
         });
 
@@ -53,31 +51,6 @@ export class SettingsPage {
         });
     }
 
-    loadFromDb() {
-        this.storage.query("SELECT * FROM eventteams").then(data => {
-            if(data.res.rows.length > 0) {
-                for(let i = 0; i < data.res.rows.length; i++) {
-                    this.allTeams.push({
-                        number: data.res.rows.item(i).number,
-                        name: this.unescape(data.res.rows.item(i).nickname),
-                        website: decodeURIComponent(data.res.rows.item(i).website)
-                    });
-                }
-                document.getElementById("addChangeEvent").innerHTML = "Change event";
-            }
-        }, error => {
-            console.log("select error -> " + JSON.stringify(error.err));
-        });
-    }
-
-    addTeamToDb(number, name, website) {
-        this.storage.query("INSERT INTO eventteams (number, nickname, website) VALUES ('" + number + "', '" + this.escape(name) + "', '" + encodeURIComponent(website) + "')").then(data => {
-
-        }, error => {
-            console.log("insert error -> " + JSON.stringify(error.err) + " with " + name + ", " + website + ", " + website);
-        });
-    }
-
     // NOTE: SqlStorage will set the value as a string, so all numbers or booleans are stringified
     updateStorage(key) {
         // console.log("Changed key '" + key + "'. Now, it is: " + this[key]);
@@ -87,22 +60,6 @@ export class SettingsPage {
     // returns a URL to the BlueAllianceAPI to make a GET request to get event information
     makeUrl(eventCode) {
         return "https://www.thebluealliance.com/api/v2/event/" + eventCode + "/teams?X-TBA-App-Id=frc2976:post-season-scouting-app:v01"
-    }
-
-    escape(teamName) {
-        var entityMap = {
-            "&": "&amp;",
-            '"': '&quot;',
-            "'": '&#39;'
-        };
-
-        return teamName.replace(/[&"']/g, function(c) {
-            return entityMap[c];
-        });
-    }
-
-    unescape(escapedName) {
-        return escapedName.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39/g, "'");
     }
 
     // is the eventCode in the form of a BlueAllianceAPI event code
@@ -154,19 +111,20 @@ export class SettingsPage {
 
                         if(this.isValidEventCode(eventCode)) { // it fits the format
                             this.http.get(this.makeUrl(eventCode)).subscribe(data => { // HTTP GET from the BlueAllianceAPI
-                                this.clearDb();
-
+                                this.teamStorageService.clearDb();
                                 let teams = data.json();
 
                                 // for some reason, a for-of loop doesn't work here
                                 for(let i = 0; i < teams.length; i++) {
-                                    this.addTeamToDb(teams[i].team_number, teams[i].nickname, teams[i].website);
+                                    this.teamStorageService.addTeamToDb(teams[i].team_number, teams[i].nickname, teams[i].website);
                                 }
 
-                                this.loadFromDb();
+                                document.getElementById("addChangeEvent").innerHTML = "Change event";
 
                                 this.eventCode = eventCode;
                                 this.updateStorage("eventCode");
+                                while(this.teamStorageService.teamsToAdd > 0) {}
+                                this.allTeams = this.teamStorageService.getTeams();
                             }, error => { // not a recognized event code (404) or no internet connection
                                 this.onInvalidCode(eventCode);
                             });
@@ -181,18 +139,49 @@ export class SettingsPage {
         this.nav.present(prompt);
     }
 
-    clearDb() {
-        this.storage.query("DELETE FROM eventteams").then(data => {
-            this.allTeams = [];
-            document.getElementById("addChangeEvent").innerHTML = "Add event";
-        }, error => {
-            console.log("delete error -> " + JSON.stringify(error.err));
-        });
-    }
-
     removeEventCode() {
-        this.clearDb();
+        this.teamStorageService.clearDb();
+        this.allTeams = [];
+
         this.eventCode = false;
         this.updateStorage("eventCode");
+
+        document.getElementById("addChangeEvent").innerHTML = "Add event";
+    }
+
+    /* ========================================= */
+    /*              EXPORTING STUFF              */
+    /* ========================================= */
+
+    teamNumberToName(teamNumber) {
+        let team = this.allTeams.find(team => team.number === teamNumber);
+        return team !== undefined ? team.name : "???";
+    }
+
+    exportAsCSV() {
+        File.createFile(cordova.file.externalApplicationStorageDirectory, "game-data.csv", true).then((fileEntry) => {
+            this.storage.query("SELECT * FROM scannedcodes").then(data => {
+                let numCodes = data.res.rows.length;
+                if(numCodes > 0) {
+                    fileEntry.createWriter((fileWriter) => {
+                        let csvContents = "ID,Team name,Team number,Scout Color Number,Scout Name,Foul,Dead Bot,Defense A Name,Defense A Makes,Defense A Misses,Defense B Name,Defense B Makes,Defense B Misses,Defense C Name,Defense C Makes,Defense C Misses,Defense D Name,Defense D Makes,Defense D Misses,Defense E Made,Auto Defense Attempted,Auto Defense Successful,Auto Ball Grabbed,Auto High Goal,Auto Low Goal,Teleop High Goal Makes,Teleop High Goal Misses,Teleop Low Goal Makes,Teleop Low Goal Misses,Endgame Challenged Tower,Endgame Scaled,High Shooting Role,Low Shooting Role,Breaching Role,Defending Role\n";
+                        for(let i = 0; i < numCodes; i++) {
+                            let code = data.res.rows.item(i).code;
+                            let decodedDataObject = this.dataService.decode(code);
+                            let decodedDataString = data.res.rows.item(i).id + "," + this.teamNumberToName(decodedDataObject.teamNumber) + "," + this.dataService.decodeToString(decodedDataObject);
+
+                            csvContents += decodedDataString + "\n";
+                        }
+
+                        fileWriter.write(csvContents);
+
+                        this.nav.present(Toast.create({
+                            message: "The CSV was exported.",
+                            duration: 2000
+                        }));
+                    });
+                }
+            });
+        });
     }
 }
