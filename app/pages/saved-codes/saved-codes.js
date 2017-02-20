@@ -13,8 +13,13 @@ export class SavedCodesPage {
         this.nav = nav;
         this.data = [
             {teamNumber: 2976, teamName: "Spartabots", scout: "Vishal"},
-            {teamNumber: 1331, teamName: "Allwe", scout: "John"},
+            {teamNumber: 1331, teamName: "lsdjlkasd", scout: "CommonName"},
             {teamNumber: Math.floor(Math.random()*4000+200), teamName: "Descrubs", scout: "Bobbert"}
         ];
+
+        this.storage = new Storage(SqlStorage);
     }
+
+
+
 }

@@ -51,22 +51,41 @@
             </ion-card>
             <ion-card>
                 <ion-card-header>
-                    Defenses Against
+                    Starting position
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-list radio-group *ngFor="let defenseGroup of [{letter:'a',op1:'Portcullis',op2:'Cheval de Frise'},{letter:'b',op1:'Moat',op2:'Ramparts'},{letter:'c',op1:'Drawbridge',op2:'Sally Port'},{letter:'d',op1:'Rock Wall',op2:'Rough Terrain'}]" [(ngModel)]="defenses[defenseGroup.letter].name">
+                    <ion-list radio-group [(ngModel)]="startingPosition">
                         <ion-list-header>
-                            Defense {{ defenseGroup.letter.toUpperCase() }}
+                            Robot closest to:
                         </ion-list-header>
                         <ion-item>
-                            <ion-label>{{ defenseGroup.op1 }}</ion-label>
-                            <ion-radio value="{{ defenseGroup.op1 }}"></ion-radio>
+                            <ion-label>Boiler</ion-label>
+                            <ion-radio item-left value="1"></ion-radio>
                         </ion-item>
                         <ion-item>
-                            <ion-label>{{ defenseGroup.op2 }}</ion-label>
-                            <ion-radio value="{{ defenseGroup.op2 }}"></ion-radio>
+                            <ion-label>Middle</ion-label>
+                            <ion-radio item-left value="2"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Return loading station</ion-label>
+                            <ion-radio item-left value="3"></ion-radio>
                         </ion-item>
                     </ion-list>
+                </ion-card-content>
+            </ion-card>
+            <ion-card>
+                <ion-card-header>
+                    Starting items
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Gear</ion-label>
+                        <ion-checkbox [(ngModel)]="gear"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>10 Balls</ion-label>
+                        <ion-checkbox [(ngModel)]="balls"></ion-checkbox>
+                    </ion-item>
                 </ion-card-content>
             </ion-card>
         </div>
@@ -74,27 +93,39 @@
         <div *ngSwitchWhen="'during'">
             <ion-card>
                 <ion-card-header>
-                    Autonomous Defenses
+                    Autonomous
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-list radio-group [(ngModel)]="autonomousDefense">
+                    <ion-item>
+                        <ion-label>Crossed base line</ion-label>
+                        <ion-checkbox [(ngModel)]="crossedBaseline"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Attempted to place a gear</ion-label>
+                        <ion-checkbox [(ngModel)]="attemptedGearAuto"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Placed a gear</ion-label>
+                        <ion-checkbox [(ngModel)]="placedGearAuto"></ion-checkbox>
+                    </ion-item>
+                    <ion-list radio-group [(ngModel)]="autoGearLocation">
                         <ion-list-header>
-                            Defense attempted?
+                            Placed gear in
                         </ion-list-header>
-                        <ion-item *ngFor="let groupLetter of ['a','b','c','d','e']">
-                            <ion-label>({{ groupLetter.toUpperCase() }}) {{ defenses[groupLetter].name }}</ion-label>
-                            <ion-radio value="{{ groupLetter.toUpperCase() }}"></ion-radio>
+                        <ion-item>
+                            <ion-label>A</ion-label>
+                            <ion-radio item-left value="A"></ion-radio>
                         </ion-item>
                         <ion-item>
-                            <ion-label>None</ion-label>
-                            <ion-radio value="N"></ion-radio>
+                            <ion-label>B</ion-label>
+                            <ion-radio item-left value="B"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>C</ion-label>+
+                            <ion-radio item-left value="C"></ion-radio>
                         </ion-item>
                     </ion-list>
-
-                    <ion-item>
-                        <ion-label>Successful</ion-label>
-                        <ion-checkbox [(ngModel)]="autonomousSuccessful" [disabled]="autonomousDefense === 'N'"></ion-checkbox>
-                    </ion-item>
+                    <img style="width:70%;margin:auto;" src="{{navbarColor}}_tower.jpg" />
                 </ion-card-content>
             </ion-card>
 
@@ -108,42 +139,38 @@
                         <ion-checkbox [(ngModel)]="autoBallGrabbed"></ion-checkbox>
                     </ion-item>
                     <ion-item>
-                        <ion-label>High goal score</ion-label>
-                        <ion-checkbox [(ngModel)]="autoHighGoal"></ion-checkbox>
+                        <ion-label>Attempted to shoot into high goal</ion-label>
+                        <ion-checkbox [(ngModel)]="attemptedHighAuto"></ion-checkbox>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Low goal score</ion-label>
-                        <ion-checkbox [(ngModel)]="autoLowGoal"></ion-checkbox>
+                        <ion-label>Shot into high goal</ion-label>
+                        <ion-checkbox [(ngModel)]="shotHighAuto"></ion-checkbox>
                     </ion-item>
-                </ion-card-content>
-            </ion-card>
-
-            <ion-card *ngFor="let groupLetter of ['a','b','c','d']">
-                <ion-card-header>
-                    Teleop {{ defenses[groupLetter].name }}
-                </ion-card-header>
-                <ion-card-content>
-                    Makes:
-                    <button danger (click)="decrementDefense(groupLetter,'makes')">-</button>
-                    {{ defenses[groupLetter].makes }}
-                    <button primary (click)="incrementDefense(groupLetter,'makes')">+</button>
-                    <br>
-                    Misses:
-                    <button danger (click)="decrementDefense(groupLetter,'misses')">-</button>
-                    {{ defenses[groupLetter].misses }}
-                    <button primary (click)="incrementDefense(groupLetter,'misses')">+</button>
+                    <ion-item>
+                        <ion-label>Attempted to shoot into low goal</ion-label>
+                        <ion-checkbox [(ngModel)]="attemptedLowAuto"></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Shot into low goal</ion-label>
+                        <ion-checkbox [(ngModel)]="shotLowAuto"></ion-checkbox>
+                    </ion-item>
                 </ion-card-content>
             </ion-card>
 
             <ion-card>
                 <ion-card-header>
-                    Teleop Lowbar
+                    Teleop Gears
                 </ion-card-header>
-                <ion-card-content>
-                    <ion-item>
-                        <ion-label>Passed</ion-label>
-                        <ion-checkbox [(ngModel)]="defenses.e.made"></ion-checkbox>
-                    </ion-item>
+                <ion-card-content class="hasButtons">
+                    Makes:
+                    <button danger (click)="decrementGear('makes')">-</button>
+                    {{ gears.makes }}
+                    <button primary (click)="incrementGear('makes')">+</button>
+                    <br>
+                    Misses:
+                    <button danger (click)="decrementGear('misses')">-</button>
+                    {{ gears.misses }}
+                    <button primary (click)="incrementGear('misses')">+</button>
                 </ion-card-content>
             </ion-card>
 
@@ -151,7 +178,7 @@
                 <ion-card-header>
                     Teleop High Goals
                 </ion-card-header>
-                <ion-card-content>
+                <ion-card-content class="hasButtons">
                     Makes:
                     <button danger (click)="decrementGoal('high','makes')">-</button>
                     {{ goals.high.makes }}
@@ -168,7 +195,7 @@
                 <ion-card-header>
                     Teleop Low Goals
                 </ion-card-header>
-                <ion-card-content>
+                <ion-card-content class="hasButtons">
                     Makes:
                     <button danger (click)="decrementGoal('low','makes')">-</button>
                     {{ goals.low.makes }}
@@ -185,17 +212,26 @@
         <div *ngSwitchWhen="'post'">
             <ion-card>
                 <ion-card-header>
-                    Endgame
+                    Scaling
                 </ion-card-header>
                 <ion-card-content>
-                    <ion-item>
-                        <ion-label>Challenged tower</ion-label>
-                        <ion-checkbox [(ngModel)]="endgame.challengedTower"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Scaled</ion-label>
-                        <ion-checkbox [(ngModel)]="endgame.scaled"></ion-checkbox>
-                    </ion-item>
+                    <ion-list radio-group [(ngModel)]="scaling">
+                        <ion-list-header>
+                            Climbing
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-label>Did not attempt</ion-label>
+                            <ion-radio item-left value="noClimb"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Failed to climb</ion-label>
+                            <ion-radio item-left value="failedClimb"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Climbed</ion-label>+
+                            <ion-radio item-left value="climbed"></ion-radio>
+                        </ion-item>
+                    </ion-list>
                 </ion-card-content>
             </ion-card>
             <ion-card>
@@ -212,12 +248,23 @@
                         <ion-checkbox [(ngModel)]="roles.lowShooting"></ion-checkbox>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Breaching</ion-label>
-                        <ion-checkbox [(ngModel)]="roles.breaching"></ion-checkbox>
+                        <ion-label>Gears</ion-label>
+                        <ion-checkbox [(ngModel)]="roles.gears"></ion-checkbox>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Defending</ion-label>
-                        <ion-checkbox [(ngModel)]="roles.defending"></ion-checkbox>
+                        <ion-label>Defense</ion-label>
+                        <ion-checkbox [(ngModel)]="roles.defense"></ion-checkbox>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+            <ion-card>
+                <ion-card-header>
+                    Comments
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>Anything special?</ion-label>
+                        <ion-textarea [(ngModel)]="comments"></ion-textarea>
                     </ion-item>
                 </ion-card-content>
             </ion-card>

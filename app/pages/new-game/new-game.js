@@ -42,39 +42,9 @@ export class NewGamePage {
         this.foul = false;
         this.deadBot = false;
 
-        this.autonomousDefense = "N";
-        this.autonomousSuccessful = false;
-
         this.autoBallGrabbed = false;
         this.autoHighGoal = false;
         this.autoLowGoal = false;
-
-        this.defenses = {
-            a: {
-                name: "Portcullis / Cheval de Frise",
-                makes: 0,
-                misses: 0
-            },
-            b: {
-                name: "Moat / Ramparts",
-                makes: 0,
-                misses: 0
-            },
-            c: {
-                name: "Drawbridge / Sally Port",
-                makes: 0,
-                misses: 0
-            },
-            d: {
-                name: "Rock Wall / Rough Terrain",
-                makes: 0,
-                misses: 0
-            },
-            e: {
-                name: "Lowbar",
-                made: false
-            }
-        };
 
         this.goals = {
             high: {
@@ -87,16 +57,16 @@ export class NewGamePage {
             }
         };
 
-        this.endgame = {
-            challengedTower: false,
-            scaled: false
+        this.gears = {
+            makes: 0,
+            misses: 0
         };
 
         this.roles = {
             highShooting: false,
             lowShooting: false,
-            breaching: false,
-            defending: false
+            gears: false,
+            defense: false
         };
 
     }
@@ -130,18 +100,23 @@ export class NewGamePage {
         this.teamName = team !== undefined ? team.name : "???";
     }
 
-    incrementDefense(groupLetter, makesOrMisses) {
-        if(this.defenses[groupLetter][makesOrMisses] < 35) this.defenses[groupLetter][makesOrMisses]++;
-    }
-    decrementDefense(groupLetter, makesOrMisses) {
-        if(this.defenses[groupLetter][makesOrMisses] > 0) this.defenses[groupLetter][makesOrMisses]--;
-    }
-
     incrementGoal(highOrLow, makesOrMisses) {
-        if(this.goals[highOrLow][makesOrMisses] < 35) this.goals[highOrLow][makesOrMisses]++;
+        if(this.goals[highOrLow][makesOrMisses] < 500) this.goals[highOrLow][makesOrMisses] += 10;
     }
     decrementGoal(highOrLow, makesOrMisses) {
-        if(this.goals[highOrLow][makesOrMisses] > 0) this.goals[highOrLow][makesOrMisses]--;
+        if(this.goals[highOrLow][makesOrMisses] > 0) this.goals[highOrLow][makesOrMisses] -= 10;
+    }
+
+    incrementGear(makesOrMisses) {
+        if(makesOrMisses == "makes" && this.gears.makes < 18) {
+            this.gears.makes++;
+        }
+        else if(makesOrMisses == "misses" && this.gears.misses < 40) {
+            this.gears.misses++;
+        }
+    }
+    decrementGear(makesOrMisses) {
+        if(this.gears[makesOrMisses] > 0) this.gears[makesOrMisses]--;
     }
 
     makeQR() {
