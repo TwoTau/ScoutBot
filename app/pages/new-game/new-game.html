@@ -1,10 +1,10 @@
-<ion-navbar *navbar>
+<ion-navbar *navbar [attr.darkscheme]="darkscheme === 'true' ? true : null">
     <ion-title>
-        {{ colorNumber }} - {{ scout }}
+        {{ colorNumber }} <span *ngIf="teamNumber">({{ teamNumber }})</span> - {{ scout }}
     </ion-title>
 </ion-navbar>
 
-<ion-toolbar>
+<ion-toolbar [attr.darkscheme]="darkscheme === 'true' ? true : null">
     <ion-segment [(ngModel)]="gameMode">
         <ion-segment-button value="pre">
             Pregame
@@ -29,9 +29,13 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Team number</ion-label>
-                        <ion-input type="number" placeholder="e.x. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
+                        <ion-input type="number" placeholder="e.g. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
                     </ion-item>
-                    <span [innerHTML]="teamName"></span>
+                    Team name: <span [innerHTML]="teamName"></span>
+                    <ion-item>
+                        <ion-label>Match number</ion-label>
+                        <ion-input type="number" placeholder="e.g. 21" min="1" max="100" [(ngModel)]="matchNumber"></ion-input>
+                    </ion-item>
                 </ion-card-content>
             </ion-card>
             <ion-card>
@@ -80,11 +84,11 @@
                 <ion-card-content>
                     <ion-item>
                         <ion-label>Gear</ion-label>
-                        <ion-checkbox [(ngModel)]="gear"></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="startsWithGear"></ion-checkbox>
                     </ion-item>
                     <ion-item>
                         <ion-label>10 Balls</ion-label>
-                        <ion-checkbox [(ngModel)]="balls"></ion-checkbox>
+                        <ion-checkbox [(ngModel)]="startsWithBalls"></ion-checkbox>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -100,32 +104,48 @@
                         <ion-label>Crossed base line</ion-label>
                         <ion-checkbox [(ngModel)]="crossedBaseline"></ion-checkbox>
                     </ion-item>
-                    <ion-item>
-                        <ion-label>Attempted to place a gear</ion-label>
-                        <ion-checkbox [(ngModel)]="attemptedGearAuto"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Placed a gear</ion-label>
-                        <ion-checkbox [(ngModel)]="placedGearAuto"></ion-checkbox>
-                    </ion-item>
-                    <ion-list radio-group [(ngModel)]="autoGearLocation">
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    Autonomous Gear
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list radio-group [(ngModel)]="autoGear">
+                        <ion-item>
+                            <ion-label>Did not attempt</ion-label>
+                            <ion-radio item-left value="0"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Attempted and failed</ion-label>
+                            <ion-radio item-left value="1"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Successful</ion-label>
+                            <ion-radio item-left value="2"></ion-radio>
+                        </ion-item>
+                    </ion-list>
+                    <ion-list radio-group [(ngModel)]="autoGearLocation" id="img-container" class="{{navbarColor}}" *ngIf="autoGear === '1' || autoGear === '2'">
                         <ion-list-header>
                             Placed gear in
                         </ion-list-header>
-                        <ion-item>
-                            <ion-label>A</ion-label>
-                            <ion-radio item-left value="A"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>B</ion-label>
-                            <ion-radio item-left value="B"></ion-radio>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label>C</ion-label>+
-                            <ion-radio item-left value="C"></ion-radio>
-                        </ion-item>
+                        <img src="{{navbarColor}}_tower.png" />
+                        <div>
+                            <ion-item id="A">
+                                <ion-label>A</ion-label>
+                                <ion-radio item-left value="A"></ion-radio>
+                            </ion-item>
+                            <ion-item id="B">
+                                <ion-label>B</ion-label>
+                                <ion-radio item-left value="B"></ion-radio>
+                            </ion-item>
+                            <ion-item id="C">
+                                <ion-label>C</ion-label>
+                                <ion-radio item-left value="C"></ion-radio>
+                            </ion-item>
+                        </div>
                     </ion-list>
-                    <img style="width:70%;margin:auto;" src="{{navbarColor}}_tower.jpg" />
                 </ion-card-content>
             </ion-card>
 
@@ -138,22 +158,40 @@
                         <ion-label>Ball grabbed</ion-label>
                         <ion-checkbox [(ngModel)]="autoBallGrabbed"></ion-checkbox>
                     </ion-item>
-                    <ion-item>
-                        <ion-label>Attempted to shoot into high goal</ion-label>
-                        <ion-checkbox [(ngModel)]="attemptedHighAuto"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Shot into high goal</ion-label>
-                        <ion-checkbox [(ngModel)]="shotHighAuto"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Attempted to shoot into low goal</ion-label>
-                        <ion-checkbox [(ngModel)]="attemptedLowAuto"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>Shot into low goal</ion-label>
-                        <ion-checkbox [(ngModel)]="shotLowAuto"></ion-checkbox>
-                    </ion-item>
+                    <ion-list radio-group [(ngModel)]="autoHighGoal">
+                        <ion-list-header>
+                            Auto High Goal
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-label>Did not attempt</ion-label>
+                            <ion-radio item-left value="0"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Attempted and failed</ion-label>
+                            <ion-radio item-left value="1"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Successful</ion-label>
+                            <ion-radio item-left value="2"></ion-radio>
+                        </ion-item>
+                    </ion-list>
+                    <ion-list radio-group [(ngModel)]="autoLowGoal">
+                        <ion-list-header>
+                            Auto Low Goal
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-label>Did not attempt</ion-label>
+                            <ion-radio item-left value="0"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Attempted and failed</ion-label>
+                            <ion-radio item-left value="1"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Successful</ion-label>
+                            <ion-radio item-left value="2"></ion-radio>
+                        </ion-item>
+                    </ion-list>
                 </ion-card-content>
             </ion-card>
 
@@ -180,14 +218,22 @@
                 </ion-card-header>
                 <ion-card-content class="hasButtons">
                     Makes:
-                    <button danger (click)="decrementGoal('high','makes')">-</button>
+                    <button danger (click)="decrementGoal('high','makes', 1)">-1</button>
+                    <button danger (click)="decrementGoal('high','makes', 5)">-5</button>
+                    <button danger (click)="decrementGoal('high','makes', 10)">-10</button>
                     {{ goals.high.makes }}
-                    <button primary (click)="incrementGoal('high','makes')">+</button>
+                    <button primary (click)="incrementGoal('high','makes', 1)">+1</button>
+                    <button primary (click)="incrementGoal('high','makes', 5)">+5</button>
+                    <button primary (click)="incrementGoal('high','makes', 10)">+10</button>
                     <br>
                     Misses:
-                    <button danger (click)="decrementGoal('high','misses')">-</button>
+                    <button danger (click)="decrementGoal('high','misses', 1)">-1</button>
+                    <button danger (click)="decrementGoal('high','misses', 5)">-5</button>
+                    <button danger (click)="decrementGoal('high','misses', 10)">-10</button>
                     {{ goals.high.misses }}
-                    <button primary (click)="incrementGoal('high','misses')">+</button>
+                    <button primary (click)="incrementGoal('high','misses', 1)">+1</button>
+                    <button primary (click)="incrementGoal('high','misses', 5)">+5</button>
+                    <button primary (click)="incrementGoal('high','misses', 10)">+10</button>
                 </ion-card-content>
             </ion-card>
 
@@ -197,14 +243,22 @@
                 </ion-card-header>
                 <ion-card-content class="hasButtons">
                     Makes:
-                    <button danger (click)="decrementGoal('low','makes')">-</button>
+                    <button danger (click)="decrementGoal('low','makes', 1)">-1</button>
+                    <button danger (click)="decrementGoal('low','makes', 5)">-5</button>
+                    <button danger (click)="decrementGoal('low','makes', 10)">-10</button>
                     {{ goals.low.makes }}
-                    <button primary (click)="incrementGoal('low','makes')">+</button>
+                    <button primary (click)="incrementGoal('low','makes', 1)">+1</button>
+                    <button primary (click)="incrementGoal('low','makes', 5)">+5</button>
+                    <button primary (click)="incrementGoal('low','makes', 10)">+10</button>
                     <br>
                     Misses:
-                    <button danger (click)="decrementGoal('low','misses')">-</button>
+                    <button danger (click)="decrementGoal('low','misses', 1)">-1</button>
+                    <button danger (click)="decrementGoal('low','misses', 5)">-5</button>
+                    <button danger (click)="decrementGoal('low','misses', 10)">-10</button>
                     {{ goals.low.misses }}
-                    <button primary (click)="incrementGoal('low','misses')">+</button>
+                    <button primary (click)="incrementGoal('low','misses', 1)">+1</button>
+                    <button primary (click)="incrementGoal('low','misses', 5)">+5</button>
+                    <button primary (click)="incrementGoal('low','misses', 10)">+10</button>
                 </ion-card-content>
             </ion-card>
         </div>
@@ -221,15 +275,15 @@
                         </ion-list-header>
                         <ion-item>
                             <ion-label>Did not attempt</ion-label>
-                            <ion-radio item-left value="noClimb"></ion-radio>
+                            <ion-radio item-left value="0"></ion-radio>
                         </ion-item>
                         <ion-item>
                             <ion-label>Failed to climb</ion-label>
-                            <ion-radio item-left value="failedClimb"></ion-radio>
+                            <ion-radio item-left value="1"></ion-radio>
                         </ion-item>
                         <ion-item>
                             <ion-label>Climbed</ion-label>+
-                            <ion-radio item-left value="climbed"></ion-radio>
+                            <ion-radio item-left value="2"></ion-radio>
                         </ion-item>
                     </ion-list>
                 </ion-card-content>
@@ -275,9 +329,8 @@
                 <ion-card-content>
                     <button secondary (click)="makeQR()">Make QR</button>
                     <!-- TODO: add an errors div here -->
-                    <canvas id="qrCode">
-
-                    </canvas>
+                    <br>
+                    <canvas id="qrCode"></canvas>
                 </ion-card-content>
             </ion-card>
         </div>

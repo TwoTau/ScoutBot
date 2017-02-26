@@ -1,5 +1,76 @@
+[darkscheme] ~ ion-content.new-game {
+    background: #111;
+    color: #eee;
+    ion-card, ion-card-content, ion-card-header, ion-item {
+        background: #222;
+        color: #eee;
+    }
+    ion-list-header, ion-item, div.item-inner {
+        border-color: #444;
+    }
+}
+
 .new-game {
+
     button[danger], button[primary] {
         width: 60px;
+    }
+
+    #qrCode {
+        padding: 10px;
+        background: #fff;
+        width: 80%;
+        margin: 0 auto;
+        image-rendering: pixelated;
+        display: none;
+    }
+
+    #img-container {
+        position: relative;
+        border: 0;
+        img {
+            width: 70%;
+            margin: auto;
+        }
+        &.red img {
+            margin-right: 0;
+        }
+        &.blue {
+            img {
+                margin-left: 0;
+            }
+            ion-item {
+                margin-left: 70%;
+            }
+        }
+        ion-list-header {
+            border: 0;
+        }
+        ion-item {
+            position: absolute;
+            left: 0;
+            background: transparent;
+            border: 0;
+            ion-radio {
+                padding: 0;
+                display: inline-block;
+            }
+            ion-label {
+                padding: 0;
+            }
+            div.item-inner {
+                border: 0;
+                display: inline-block;
+            }
+        }
+        #A {
+            top: 22%;
+        }
+        #B {
+            top: 54%;
+        }
+        #C {
+            top: 85%;
+        }
     }
 }

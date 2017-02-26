@@ -41,6 +41,9 @@ export class HomePage {
         this.storage.get("isMaster").then(value => {
             this.isMaster = (value === "true");
         });
+        this.storage.get("darkscheme").then(value => {
+            this.darkscheme = value;
+        });
     }
 
     createCodesDb() {
@@ -79,13 +82,6 @@ export class HomePage {
     }
 
     scanQR() {
-        // FOR TESTING:
-        // if(Math.random() < 0.5) {
-        //     this.addCodeToDb("13411280400041001130001aScout");
-        // } else {
-        //     this.addCodeToDb("12432280200041001130001cSomeoneElse");
-        // }
-
         BarcodeScanner.scan().then(result => {
             if(result.cancelled) {
                 this.nav.present(Toast.create({

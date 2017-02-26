@@ -1,3 +1,15 @@
+[darkscheme] ~ ion-content.settings {
+    background: #111;
+    color: #eee;
+    ion-card, ion-card-content, ion-card-header, ion-item {
+        background: #222;
+        color: #eee;
+    }
+    ion-list-header, ion-item, div.item-inner {
+        border-color: #444;
+    }
+}
+
 .settings {
     #eventInfo {
         td {

@@ -36,15 +36,32 @@ export class NewGamePage {
             }
         });
 
+        this.storage.get("darkscheme").then(value => {
+            this.darkscheme = value;
+        });
+
         this.teamNumber;
         this.teamName = "???";
+        this.matchNumber;
 
         this.foul = false;
         this.deadBot = false;
 
+        this.startingPosition;
+        this.startsWithGear = false;
+        this.startsWithBalls = false;
+
+        this.crossedBaseline = false;
+        this.autoGear = "0";
+        this.autoGearLocation;
         this.autoBallGrabbed = false;
-        this.autoHighGoal = false;
-        this.autoLowGoal = false;
+        this.autoHighGoal = 0;
+        this.autoLowGoal = 0;
+
+        this.gears = {
+            makes: 0,
+            misses: 0
+        };
 
         this.goals = {
             high: {
@@ -57,10 +74,7 @@ export class NewGamePage {
             }
         };
 
-        this.gears = {
-            makes: 0,
-            misses: 0
-        };
+        this.scaling;
 
         this.roles = {
             highShooting: false,
@@ -68,6 +82,8 @@ export class NewGamePage {
             gears: false,
             defense: false
         };
+
+        this.comments = "";
 
     }
 
@@ -100,18 +116,23 @@ export class NewGamePage {
         this.teamName = team !== undefined ? team.name : "???";
     }
 
-    incrementGoal(highOrLow, makesOrMisses) {
-        if(this.goals[highOrLow][makesOrMisses] < 500) this.goals[highOrLow][makesOrMisses] += 10;
+    incrementGoal(highOrLow, makesOrMisses, numIncrement) {
+        this.goals[highOrLow][makesOrMisses] += numIncrement;
+        if(this.goals[highOrLow][makesOrMisses] > 500) {
+            this.goals[highOrLow][makesOrMisses] = 500;
+        }
     }
-    decrementGoal(highOrLow, makesOrMisses) {
-        if(this.goals[highOrLow][makesOrMisses] > 0) this.goals[highOrLow][makesOrMisses] -= 10;
+    decrementGoal(highOrLow, makesOrMisses, numIncrement) {
+        this.goals[highOrLow][makesOrMisses] -= numIncrement;
+        if(this.goals[highOrLow][makesOrMisses] < 0) {
+            this.goals[highOrLow][makesOrMisses] = 0;
+        }
     }
 
     incrementGear(makesOrMisses) {
-        if(makesOrMisses == "makes" && this.gears.makes < 18) {
+        if(makesOrMisses == "makes" && this.gears.makes < 20) {
             this.gears.makes++;
-        }
-        else if(makesOrMisses == "misses" && this.gears.misses < 40) {
+        } else if(makesOrMisses == "misses" && this.gears.misses < 50) {
             this.gears.misses++;
         }
     }
@@ -123,19 +144,22 @@ export class NewGamePage {
         if(!this.teamNumber) {
             return this.notFilledOutError("Team number", "Pregame");
         }
-        if(this.defenses.a.name === "Portcullis / Cheval de Frise") {
-            return this.notFilledOutError("Defense A", "Pregame");
-        } if(this.defenses.b.name === "Moat / Ramparts") {
-            return this.notFilledOutError("Defense B", "Pregame");
-        } if(this.defenses.c.name === "Drawbridge / Sally Port") {
-            return this.notFilledOutError("Defense C", "Pregame");
-        } if(this.defenses.d.name === "Rock Wall / Rough Terrain") {
-            return this.notFilledOutError("Defense D", "Pregame");
+        if(!this.matchNumber) {
+            return this.notFilledOutError("Match number", "Pregame");
         }
+        if(!this.startingPosition) {
+            return this.notFilledOutError("Starting position", "Pregame");
+        }
+        if(this.autoGear !== "0" && !this.autoGearLocation) {
+            return this.notFilledOutError("Auto gear location", "During");
+        }
+
+        let qrElement = document.getElementById("qrCode");
         qr.canvas({
-            canvas: document.getElementById("qrCode"),
+            canvas: qrElement,
             value: this.getText()
         });
+        qrElement.style.display = "block";
     }
 
     notFilledOutError(fieldUnfilled, section) {
@@ -151,24 +175,34 @@ export class NewGamePage {
     }
 
     getText() {
+        let autoGearLocation = this.autoGearLocation;
+        if(this.autoGear === "0") {
+            autoGearLocation = "";
+        }
         let text = this.dataService.encode({
             teamNumber: this.teamNumber,
             scoutColorNumber: this.colorNumber,
             scoutName: this.scout,
+            matchNumber: this.matchNumber,
             foul: this.foul,
             deadBot: this.deadBot,
-            defenses: this.defenses,
-            autonomousDefense: this.autonomousDefense,
-            autonomousSuccessful: this.autonomousSuccessful,
+            startingPosition: this.startingPosition,
+            startsWithGear: this.startsWithGear,
+            startsWithBalls: this.startsWithBalls,
+            crossedBaseline: this.crossedBaseline,
+            autoGear: this.autoGear,
+            autoGearLocation: this.autoGearLocation,
             autoBallGrabbed: this.autoBallGrabbed,
             autoHighGoal: this.autoHighGoal,
             autoLowGoal: this.autoLowGoal,
+            gears: this.gears,
             goals: this.goals,
-            endgame: this.endgame,
-            roles: this.roles
+            scaling: this.scaling,
+            roles: this.roles,
+            comments: this.comments
         });
         console.log("Encoded: " + text);
-        console.log("Decoded: " + JSON.stringify(this.dataService.decode(text)));
+        // console.log("Decoded: " + this.dataService.decode(text).csvRowArray.join(","));
 
         return text;
     }

@@ -1,11 +1,10 @@
-<ion-navbar *navbar>
+<ion-navbar *navbar [attr.darkscheme]="darkscheme === 'true' ? true : null">
     <ion-title text-center>
         ScoutBot
     </ion-title>
 </ion-navbar>
 
 <ion-content class="home">
-    <span [innerHTML]="stuff"></span>
     <button (click)="makeNewGame()">
         <ion-icon name="add"></ion-icon>
         New

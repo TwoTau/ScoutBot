@@ -1,4 +1,4 @@
-<ion-navbar *navbar>
+<ion-navbar *navbar [attr.darkscheme]="darkscheme === 'true' ? true : null">
     <ion-title>
         ScoutBot Settings
     </ion-title>
@@ -33,13 +33,17 @@
                     <ion-option value="Blue 3">Blue 3</ion-option>
                 </ion-select>
             </ion-item>
+            <ion-item>
+                <ion-label>Use dark scheme</ion-label>
+                <ion-toggle [(ngModel)]="darkscheme" (change)="updateStorage('darkscheme')"></ion-toggle>
+            </ion-item>
         </ion-card-content>
     </ion-card>
     <ion-card>
         <ion-card-header>Export</ion-card-header>
         <ion-card-content>
             <button (click)="exportAsCSV()">as CSV (.csv)</button>
-            <button>as sqlite3 database (.db)</button>
+            <!-- <button>as sqlite3 database (.db)</button> -->
         </ion-card-content>
     </ion-card>
     <ion-card>

@@ -26,6 +26,10 @@ export class SettingsPage {
 
         this.eventCode = false;
 
+        this.storage.get("darkscheme").then(value => {
+            this.darkscheme = (value === undefined) ? false : value;
+        });
+
         this.storage.get("eventCode").then(value => {
             if(value !== "false" && value !== undefined) {
                 this.eventCode = value;
@@ -168,7 +172,7 @@ export class SettingsPage {
                         for(let i = 0; i < numCodes; i++) {
                             let code = data.res.rows.item(i).code;
                             let decodedDataObject = this.dataService.decode(code);
-                            let decodedDataString = data.res.rows.item(i).id + "," + this.teamNumberToName(decodedDataObject.teamNumber) + "," + this.dataService.decodeToString(decodedDataObject);
+                            let decodedDataString = data.res.rows.item(i).id + "," + decodedDataObject.csvRow;
 
                             csvContents += decodedDataString + "\n";
                         }

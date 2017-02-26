@@ -21,6 +21,10 @@ export class NewPitScoutPage {
             }
         });
 
+        this.storage.get("darkscheme").then(value => {
+            this.darkscheme = value;
+        });
+
         this.teamNumber;
         this.teamName = "???";
 
@@ -53,6 +57,6 @@ export class NewPitScoutPage {
     }
 
     saveData() {
-        
+
     }
 }

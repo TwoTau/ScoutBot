@@ -19,9 +19,9 @@ export class GameDataService {
         return originalString;
     }
 
-    // Returns a boolean
+    // Returns a boolean as a capitalized string
     binToBool(binaryString) {
-        return binaryString === "1";
+        return (binaryString === "1") ? "TRUE" : "FALSE";
     }
 
     // Returns an array of booleans
@@ -55,218 +55,121 @@ export class GameDataService {
         return parseInt(base10Num, 10).toString(36);
     }
 
+    attemptSuccessTernaryToString(ternaryString) {
+        ternaryString = +ternaryString;
+        if(ternaryString === 0) {
+            ternaryString = "Did not attempt";
+        } else if(ternaryString === 1) {
+            ternaryString = "Attempt";
+        } else if(ternaryString === 2) {
+            ternaryString = "Success";
+        }
+        return ternaryString;
+    }
+
     // Parameters: teamNumber, scoutColorNumber, scoutName, foul, deadBot, defenses, autonomousDefense, autonomousSuccessful, autoBallGrabbed, autoHighGoal, autoLowGoal, goals, endgame, roles
     encode(options) {
-        let teamNumber = this.pad(options.teamNumber + "", 4);
-
-        let scoutInfo = {
-            color: options.scoutColorNumber[0] === "R" ? 0 : 3,
-            number: +options.scoutColorNumber.slice(-1),
-            name: options.scoutName
-        };
+        let teamNumber = options.teamNumber;
+        let scoutColorNumber = options.scoutColorNumber;
+        let scoutName = options.scoutName;
+        let matchNumber = options.matchNumber;
 
         let foul = this.boolToBin(options.foul);
         let deadBot = this.boolToBin(options.deadBot);
 
-        let defenseA = {
-            name: this.boolToBin(options.defenses.a.name === "Cheval de Frise"),
-            makes: this.decToBase36(options.defenses.a.makes),
-            misses: this.decToBase36(options.defenses.a.misses)
-        };
-        let defenseB = {
-            name: this.boolToBin(options.defenses.b.name === "Ramparts"),
-            makes: this.decToBase36(options.defenses.b.makes),
-            misses: this.decToBase36(options.defenses.b.misses)
-        };
-        let defenseC = {
-            name: this.boolToBin(options.defenses.c.name === "Sally Port"),
-            makes: this.decToBase36(options.defenses.c.makes),
-            misses: this.decToBase36(options.defenses.c.misses)
-        };
-        let defenseD = {
-            name: this.boolToBin(options.defenses.d.name === "Rough Terrain"),
-            makes: this.decToBase36(options.defenses.d.makes),
-            misses: this.decToBase36(options.defenses.d.misses)
-        };
+        let startingPosition = options.startingPosition;
+        let startsWithGear = this.boolToBin(options.startsWithGear);
+        let startsWithBalls = this.boolToBin(options.startsWithBalls);
 
-        let autonomousDefense = "N";
-        if(options.autonomousDefense === "A") autonomousDefense = 0;
-        if(options.autonomousDefense === "B") autonomousDefense = 2;
-        if(options.autonomousDefense === "C") autonomousDefense = 4;
-        if(options.autonomousDefense === "D") autonomousDefense = 6;
-        if(options.autonomousDefense === "E") autonomousDefense = 8;
-        if(options.autonomousSuccessful) autonomousDefense++;
-
+        let crossedBaseline = this.boolToBin(options.crossedBaseline);
+        let autoGear = options.autoGear;
+        let autoGearLocation = options.autoGearLocation;
+        if(!autoGearLocation) {
+            autoGearLocation = "0";
+        }
         let autoBallGrabbed = this.boolToBin(options.autoBallGrabbed);
-        let autoHighGoal = this.boolToBin(options.autoHighGoal);
-        let autoLowGoal = this.boolToBin(options.autoLowGoal);
+        let autoHighGoal = options.autoHighGoal;
+        let autoLowGoal = options.autoLowGoal;
 
-        let lowbarMade = this.boolToBin(options.defenses.e.made);
+        let gearsMakes = options.gears.makes;
+        let gearsMisses = options.gears.misses;
 
-        let teleopHighGoal = {
-            makes: options.goals.high.makes,
-            misses: options.goals.high.misses
-        };
+        let goalsHighMakes = options.goals.high.makes;
+        let goalsHighMisses = options.goals.high.misses;
+        let goalsLowMakes = options.goals.low.makes;
+        let goalsLowMisses = options.goals.low.misses;
 
-        let teleopLowGoal = {
-            makes: options.goals.low.makes,
-            misses: options.goals.low.misses
-        };
+        let scaling = this.boolToBin(options.scaling);
 
-        let endgame = {
-            challengedTower: this.boolToBin(options.endgame.challengedTower),
-            scaled: this.boolToBin(options.endgame.scaled)
-        };
+        let rolesHighShooting = this.boolToBin(options.roles.highShooting);
+        let rolesLowShooting = this.boolToBin(options.roles.lowShooting);
+        let rolesGears = this.boolToBin(options.roles.breaching);
+        let rolesDefending = this.boolToBin(options.roles.defending);
 
-        let roles = {
-            highShooting: this.boolToBin(options.roles.highShooting),
-            lowShooting: this.boolToBin(options.roles.lowShooting),
-            breaching: this.boolToBin(options.roles.breaching),
-            defending: this.boolToBin(options.roles.defending)
-        };
+        let comments = options.comments;
 
-        let final = teamNumber +
-        (scoutInfo.color + scoutInfo.number) +
-        this.binToHex(foul + deadBot) +
-        this.binToHex(defenseA.name + defenseB.name + defenseC.name + defenseD.name) +
-        autonomousDefense +
-        this.binToHex(autoBallGrabbed + autoHighGoal + autoLowGoal) +
-        defenseA.makes +
-        defenseA.misses +
-        defenseB.makes +
-        defenseB.misses +
-        defenseC.makes +
-        defenseC.misses +
-        defenseD.makes +
-        defenseD.misses +
-        lowbarMade +
-        this.decToBase36(teleopHighGoal.makes) +
-        this.decToBase36(teleopHighGoal.misses) +
-        this.decToBase36(teleopLowGoal.makes) +
-        this.decToBase36(teleopLowGoal.misses) +
-        this.binToHex(endgame.challengedTower + endgame.scaled) +
-        this.binToHex(roles.highShooting + roles.lowShooting + roles.breaching + roles.defending) +
-        scoutInfo.name;
-
-        return final;
+        return [teamNumber, scoutColorNumber, scoutName, matchNumber, foul, deadBot, startingPosition, startsWithGear, startsWithBalls, crossedBaseline, autoGear, autoGearLocation, autoBallGrabbed, autoHighGoal, autoLowGoal, gearsMakes, gearsMisses, goalsHighMakes, goalsHighMisses, goalsLowMakes, goalsLowMisses, scaling, rolesHighShooting, rolesLowShooting, rolesGears, rolesDefending, comments].join(",");
     }
 
     decode(encodedString) {
-        let teamNumber = +encodedString.slice(0,4);
+        let result = encodedString.split(",");
 
-        let colorNumberArray = ["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"];
-        let scoutColorNumber = colorNumberArray[+encodedString.slice(4,5) - 1];
+        let teamNumber = +result[0];
+        let scoutColorNumber = result[1];
+        let scoutName = result[2];
+        let matchNumber = +result[3];
 
-        let foulDeadBot = this.hexToBoolArray(encodedString.slice(5,6), 2);
-        let foul = foulDeadBot[0];
-        let deadBot = foulDeadBot[1];
+        let foul = this.binToBool(result[4]);
+        let deadBot = this.binToBool(result[5]);
 
-        let defensesNameArray = this.hexToBoolArray(encodedString.slice(6,7), 4);
-        let defenses = {
-            a: {
-                name: defensesNameArray[0] ? "Cheval de Frise" : "Portcullis",
-                makes: this.base36ToDec(encodedString.slice(9,10)),
-                misses: this.base36ToDec(encodedString.slice(10,11))
-            },
-            b: {
-                name: defensesNameArray[1] ? "Ramparts" : "Moat",
-                makes: this.base36ToDec(encodedString.slice(11,12)),
-                misses: this.base36ToDec(encodedString.slice(12,13))
-            },
-            c: {
-                name: defensesNameArray[2] ? "Sally Port" : "Drawbridge",
-                makes: this.base36ToDec(encodedString.slice(13,14)),
-                misses: this.base36ToDec(encodedString.slice(14,15))
-            },
-            d: {
-                name: defensesNameArray[3] ? "Rough Terrain" : "Rock Wall",
-                makes: this.base36ToDec(encodedString.slice(15,16)),
-                misses: this.base36ToDec(encodedString.slice(16,17))
-            },
-            e: {
-                name: "Lowbar",
-                made: this.binToBool(encodedString.slice(17,18))
-            }
-        };
-
-        let autonomousDefense = encodedString.slice(7,8);
-        let autonomousSuccessful = false;
-        if(autonomousDefense === "N") {
-            autonomousDefense = "None";
-        } else {
-            let letterArray = ["a","b","c","d","e"];
-            let autonomousDefenseLetter = letterArray[+autonomousDefense / 2];
-            autonomousDefense = defenses[autonomousDefenseLetter].name;
-            if(+autonomousDefense % 2 === 1) { // odd
-                autonomousSuccessful = true;
-            }
+        let startingPosition = +result[6];
+        if(startingPosition === 0) {
+            startingPosition = "Boiler";
+        } else if(startingPosition === 1) {
+            startingPosition = "Middle";
+        } else if(startingPosition === 2) {
+            startingPosition = "Return Loading station";
         }
+        let startsWithGear = this.binToBool(result[7]);
+        let startsWithBalls = this.binToBool(result[8]);
 
-        let autoShootingArray = this.hexToBoolArray(encodedString.slice(8,9), 3);
-        let autoBallGrabbed = autoShootingArray[0];
-        let autoHighGoal = autoShootingArray[1];
-        let autoLowGoal = autoShootingArray[2];
+        let crossedBaseline = this.binToBool(result[9]);
+        let autoGear = this.attemptSuccessTernaryToString(result[10]);
+        let autoGearLocation = result[11];
+        if(autoGear === "Did not attempt") {
+            autoGearLocation = "N/A";
+        }
+        let autoBallGrabbed = this.binToBool(result[12]);
+        let autoHighGoal =  this.attemptSuccessTernaryToString(result[13]);
+        let autoLowGoal =  this.attemptSuccessTernaryToString(result[14]);
 
-        let teleopGoals = {
-            high: {
-                makes: this.base36ToDec(encodedString.slice(18,19)),
-                misses: this.base36ToDec(encodedString.slice(19,20))
-            },
-            low: {
-                makes: this.base36ToDec(encodedString.slice(20,21)),
-                misses: this.base36ToDec(encodedString.slice(21,22))
-            }
-        };
+        let gearsMakes = result[15];
+        let gearsMisses = result[16];
 
-        let endgameArray = this.hexToBoolArray(encodedString.slice(22,23), 2);
-        let endgame = {
-            challengedTower: endgameArray[0],
-            scaled: endgameArray[1]
-        };
+        let goalsHighMakes = result[17];
+        let goalsHighMisses = result[18];
+        let goalsLowMakes = result[19];
+        let goalsLowMisses = result[20];
 
-        let rolesArray = this.hexToBoolArray(encodedString.slice(23,24), 4);
-        let roles = {
-            highShooting: rolesArray[0],
-            lowShooting: rolesArray[1],
-            breaching: rolesArray[2],
-            defending: rolesArray[3]
-        };
+        let scaling = this.attemptSuccessTernaryToString(result[21]);
 
-        let scoutName = encodedString.slice(24);
+        let rolesHighShooting = this.binToBool(result[22]);
+        let rolesLowShooting = this.binToBool(result[23]);
+        let rolesGears = this.binToBool(result[24]);
+        let rolesDefending = this.binToBool(result[25]);
 
-        let auto = {
-            defenseAttempted: autonomousDefense,
-            defensesSuccessful: autonomousSuccessful,
-            ballGrabbed: autoBallGrabbed,
-            highGoal: autoHighGoal,
-            lowGoal: autoLowGoal
-        };
+        let comments = '"' + result[26] + '"';
 
-        let final = {
+        let csvRowArray = [teamNumber, scoutColorNumber, scoutName, matchNumber, foul, deadBot, startingPosition, startsWithGear, startsWithBalls, crossedBaseline, autoGear, autoGearLocation, autoBallGrabbed, autoHighGoal, autoLowGoal, gearsMakes, gearsMisses, goalsHighMakes, goalsHighMisses, goalsLowMakes, goalsLowMisses, scaling, rolesHighShooting, rolesLowShooting, rolesGears, rolesDefending, comments];
+
+        return {
             teamNumber: teamNumber,
-            scoutColorNumber: scoutColorNumber,
             scoutName: scoutName,
-            foul: foul,
-            deadBot: deadBot,
-            defenses: defenses,
-            auto: auto,
-            teleopGoals: teleopGoals,
-            endgame: endgame,
-            roles: roles
+            csvRowArray: csvRowArray
         };
-
-        return final;
-    }
-
-    // actually gives you an object, not a string. do `decodeToString(encoded).stringPart` to get the string
-    decodeToString(decodedObject) {
-        return decodedObject.teamNumber + "," + decodedObject.scoutColorNumber + "," + decodedObject.scoutName + "," + decodedObject.foul + "," + decodedObject.deadBot + "," + decodedObject.defenses.a.name + "," + decodedObject.defenses.a.makes + "," + decodedObject.defenses.a.misses + "," + decodedObject.defenses.b.name + "," + decodedObject.defenses.b.makes + "," + decodedObject.defenses.b.misses + "," + decodedObject.defenses.c.name + "," + decodedObject.defenses.c.makes + "," + decodedObject.defenses.c.misses + "," + decodedObject.defenses.d.name + "," + decodedObject.defenses.d.makes + "," + decodedObject.defenses.d.misses + "," + decodedObject.defenses.e.made + "," + decodedObject.auto.defenseAttempted + "," + decodedObject.auto.defensesSuccessful + "," + decodedObject.auto.ballGrabbed + "," + decodedObject.auto.highGoal + "," + decodedObject.auto.lowGoal + "," + decodedObject.teleopGoals.high.makes + "," + decodedObject.teleopGoals.high.misses + "," + decodedObject.teleopGoals.low.makes + "," + decodedObject.teleopGoals.low.misses + "," + decodedObject.endgame.challengedTower + "," + decodedObject.endgame.scaled + "," + decodedObject.roles.highShooting + "," + decodedObject.roles.lowShooting + "," + decodedObject.roles.breaching + "," + decodedObject.roles.defending;
     }
 
     isValid(dataString) {
-        if(dataString.length < 20) {
-            return false;
-        }
         return true;
     }
 }
