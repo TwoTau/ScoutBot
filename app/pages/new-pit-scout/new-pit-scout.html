@@ -10,18 +10,188 @@
         <ion-card-content>
             <ion-item>
                 <ion-label>Team number</ion-label>
-                <ion-input type="number" placeholder="e.x. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
+                <ion-input type="number" placeholder="e.g. 2976" min="1" max="9999" [(ngModel)]="teamNumber" (change)="changeTeamName()"></ion-input>
             </ion-item>
-            <span [innerHTML]="teamName"></span>
+            Team name: <span [innerHTML]="teamName"></span>
         </ion-card-content>
     </ion-card>
 
     <ion-card>
         <ion-card-header>
-            Save
+            Drive Train
         </ion-card-header>
         <ion-card-content>
-            <button secondary (click)="saveData()">Save Data</button>
+            <ion-item>
+                <ion-label>Traction</ion-label>
+                <ion-checkbox [(ngModel)]="drivetrain_traction"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Mecanum</ion-label>
+                <ion-checkbox [(ngModel)]="drivetrain_mecanum"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Omniwheels</ion-label>
+                <ion-checkbox [(ngModel)]="drivetrain_omni"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>2 speed</ion-label>
+                <ion-checkbox [(ngModel)]="drivetrain_2speed"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Other</ion-label>
+                <ion-checkbox [(ngModel)]="drivetrain_otherSelected"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="drivetrain_otherSelected">
+                <ion-label>Other:</ion-label>
+                <ion-textarea [(ngModel)]="drivetrain_other"></ion-textarea>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Teleop Shooting
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item>
+                <ion-label>Can high shoot</ion-label>
+                <ion-checkbox [(ngModel)]="canHighShoot"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Can low shoot</ion-label>
+                <ion-checkbox [(ngModel)]="canLowShoot"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Can pickup balls</ion-label>
+                <ion-checkbox [(ngModel)]="canPickupBalls"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Can sweep balls</ion-label>
+                <ion-checkbox [(ngModel)]="canSweepBalls"></ion-checkbox>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Teleop Gears
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item>
+                <ion-label>Can place a gear</ion-label>
+                <ion-checkbox [(ngModel)]="canPlaceGear"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="canPlaceGear">
+                <ion-label># of gears in a match</ion-label>
+                <ion-input type="number" placeholder="e.g. 5" min="1" max="20" [(ngModel)]="avgGears"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>Can pickup a gear</ion-label>
+                <ion-checkbox [(ngModel)]="canPickupGear"></ion-checkbox>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Autonomous Routine
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item>
+                <ion-label>Does start location matter?</ion-label>
+                <ion-checkbox [(ngModel)]="startLocationMatters"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Move past baseline</ion-label>
+                <ion-checkbox [(ngModel)]="autoMove"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Shoot high</ion-label>
+                <ion-checkbox [(ngModel)]="autoShootHigh"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Shoot low</ion-label>
+                <ion-checkbox [(ngModel)]="autoShootLow"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Put gear on peg</ion-label>
+                <ion-checkbox [(ngModel)]="autoGear"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="autoGear">
+                <ion-label>Put gear on any peg</ion-label>
+                <ion-checkbox [(ngModel)]="autoGearAny"></ion-checkbox>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Scaling
+        </ion-card-header>
+        <ion-card-content>
+            <ion-list radio-group [(ngModel)]="climbing">
+                <ion-list-header>
+                    Climbing
+                </ion-list-header>
+                <ion-item>
+                    <ion-label>Yes</ion-label>
+                    <ion-radio item-left value="Yes"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label>No</ion-label>
+                    <ion-radio item-left value="No"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Working on it</ion-label>+
+                    <ion-radio item-left value="Working on it"></ion-radio>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Roles
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item *ngIf="canHighShoot">
+                <ion-label>High shooting</ion-label>
+                <ion-checkbox [(ngModel)]="roles.highShooting"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="canLowShoot">
+                <ion-label>Low shooting</ion-label>
+                <ion-checkbox [(ngModel)]="roles.lowShooting"></ion-checkbox>
+            </ion-item>
+            <ion-item *ngIf="canPlaceGear">
+                <ion-label>Gears</ion-label>
+                <ion-checkbox [(ngModel)]="roles.gears"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Defense</ion-label>
+                <ion-checkbox [(ngModel)]="roles.defense"></ion-checkbox>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Comments
+        </ion-card-header>
+        <ion-card-content>
+            <ion-item>
+                <ion-label>Anything special?</ion-label>
+                <ion-textarea [(ngModel)]="comments"></ion-textarea>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Save + Picture
+        </ion-card-header>
+        <ion-card-content>
+            <button secondary (click)="takePicture()">Take Picture</button>
+            <button primary (click)="saveData()">Save Data</button>
         </ion-card-content>
     </ion-card>
 </ion-content>

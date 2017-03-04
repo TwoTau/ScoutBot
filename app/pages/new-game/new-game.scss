@@ -5,6 +5,12 @@
         background: #222;
         color: #eee;
     }
+    div.checkbox-icon:not(.checkbox-checked) {
+        background: #222;
+    }
+    div.checkbox-icon.checkbox-checked .checkbox-inner {
+        border-color: #222;
+    }
     ion-list-header, ion-item, div.item-inner {
         border-color: #444;
     }

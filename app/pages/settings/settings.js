@@ -162,17 +162,17 @@ export class SettingsPage {
         return team !== undefined ? team.name : "???";
     }
 
-    exportAsCSV() {
+    exportGameDataAsCSV() {
         File.createFile(cordova.file.externalApplicationStorageDirectory, "game-data.csv", true).then((fileEntry) => {
             this.storage.query("SELECT * FROM scannedcodes").then(data => {
                 let numCodes = data.res.rows.length;
                 if(numCodes > 0) {
                     fileEntry.createWriter((fileWriter) => {
-                        let csvContents = "ID,Team name,Team number,Scout Color Number,Scout Name,Foul,Dead Bot,Defense A Name,Defense A Makes,Defense A Misses,Defense B Name,Defense B Makes,Defense B Misses,Defense C Name,Defense C Makes,Defense C Misses,Defense D Name,Defense D Makes,Defense D Misses,Defense E Made,Auto Defense Attempted,Auto Defense Successful,Auto Ball Grabbed,Auto High Goal,Auto Low Goal,Teleop High Goal Makes,Teleop High Goal Misses,Teleop Low Goal Makes,Teleop Low Goal Misses,Endgame Challenged Tower,Endgame Scaled,High Shooting Role,Low Shooting Role,Breaching Role,Defending Role\n";
+                        let csvContents = "ID,Team number,Scout color number,Scout name,Match number,Foul,Dead bot,Starting position,Starts with gear,Starts with balls,Crossed baseline,Auto gear,Auto gear location,Auto ball grabbed,Auto high goal,Auto low goal,Gears makes,Gears misses,Goals high makes,Goals high misses,Goals low makes,Goals low misses,Scaling,Role high shooting,Role low shooting,Role gears,Role defending,Comments\n";
                         for(let i = 0; i < numCodes; i++) {
                             let code = data.res.rows.item(i).code;
                             let decodedDataObject = this.dataService.decode(code);
-                            let decodedDataString = data.res.rows.item(i).id + "," + decodedDataObject.csvRow;
+                            let decodedDataString = data.res.rows.item(i).id + "," + decodedDataObject.csvRowArray;
 
                             csvContents += decodedDataString + "\n";
                         }
@@ -180,7 +180,33 @@ export class SettingsPage {
                         fileWriter.write(csvContents);
 
                         this.nav.present(Toast.create({
-                            message: "The CSV was exported.",
+                            message: "The game data CSV was exported.",
+                            duration: 2000
+                        }));
+                    });
+                }
+            });
+        });
+    }
+
+    exportPitDataAsCSV() {
+        File.createFile(cordova.file.externalApplicationStorageDirectory, "pit-data.csv", true).then((fileEntry) => {
+            this.storage.query("SELECT * FROM pitdata").then(data => {
+                let numCodes = data.res.rows.length;
+                if(numCodes > 0) {
+                    fileEntry.createWriter((fileWriter) => {
+                        let csvContents = "ID,Team number,Wheel type traction,Wheel type mecanum,Wheel type omni,Wheel type 2 speed,Wheel type other,Can shoot high,Can shoot low,Can pickup balls,Can sweep balls,Can place gear,Average num gears,Can pickup gear,Start location matters,Auto move,Auto shoot high,Auto shoot low,Auto gear,Auto any gear,Climbing,Role high shooting,Role low shooting,Role gears,Role defense,Comments\n";
+                        for(let i = 0; i < numCodes; i++) {
+                            let code = data.res.rows.item(i).code;
+                            let row = data.res.rows.item(i).csvrow;
+
+                            csvContents += code + "," + row + "\n";
+                        }
+
+                        fileWriter.write(csvContents);
+
+                        this.nav.present(Toast.create({
+                            message: "The pit data CSV was exported.",
                             duration: 2000
                         }));
                     });

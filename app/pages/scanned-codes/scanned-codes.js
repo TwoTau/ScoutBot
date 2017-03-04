@@ -30,10 +30,12 @@ export class ScannedCodesPage {
             if(numCodes > 0) {
                 for(let i = 0; i < numCodes; i++) {
                     let code = data.res.rows.item(i).code;
-                    let decodedData = this.dataService.decode(code);
-                    decodedData.teamName = this.teamNumberToName(decodedData.teamNumber);
-                    decodedData.originalCode = code;
+
+                    let decodedDataObject = this.dataService.decode(code);
+
+                    let decodedData = decodedDataObject;
                     decodedData.scannedId = data.res.rows.item(i).id;
+                    decodedData.code = code;
                     this.data.push(decodedData);
                 }
             }
@@ -73,25 +75,22 @@ export class ScannedCodesPage {
     }
 
     viewMore(scannedId) {
-        console.log("Viewing more: " + scannedId);
         this.nav.present(Alert.create({
             title: "View more",
-            subTitle: "It works.",
+            subTitle: "This doesn't do anything.",
             buttons: ["Dismiss"]
         }));
     }
 
     editStats(scannedId) {
-        console.log("Viewing stats: " + scannedId);
         this.nav.present(Alert.create({
             title: "View stats",
-            subTitle: "It works.",
+            subTitle: "This doesn't do anything.",
             buttons: ["Dismiss"]
         }));
     }
 
     delete(scannedId) {
-        console.log("Deleting: " + scannedId);
         this.storage.query("DELETE FROM scannedcodes WHERE id = " + scannedId).then(data => {
             console.log("yay deleted " + scannedId + " successfully.");
             this.data.splice(this.data.indexOf(this.data.find(team => team.scannedId === scannedId)), 1);

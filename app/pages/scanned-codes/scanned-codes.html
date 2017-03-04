@@ -6,9 +6,8 @@
     <ion-list>
         <ion-item-sliding *ngFor="let teamData of data">
             <ion-item>
-                <h2>{{ teamData.teamNumber }} - {{ teamData.scoutName }}</h2>
+                <h2>{{ teamData.teamNumber }} - Match #{{ teamData.matchNumber }} - {{ teamData.scoutName }}</h2>
                 <h3>{{ teamData.teamName }}</h3>
-                <!-- <h4>{{ teamData.scannedId }}</h4> -->
             </ion-item>
             <ion-item-options>
                 <button primary (click)="viewMore(teamData.scannedId)">

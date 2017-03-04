@@ -165,6 +165,7 @@ export class GameDataService {
         return {
             teamNumber: teamNumber,
             scoutName: scoutName,
+            matchNumber: matchNumber,
             csvRowArray: csvRowArray
         };
     }

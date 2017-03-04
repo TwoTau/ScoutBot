@@ -153,6 +153,14 @@ export class NewGamePage {
         if(this.autoGear !== "0" && !this.autoGearLocation) {
             return this.notFilledOutError("Auto gear location", "During");
         }
+        if(this.comments.includes('"') || this.comments.includes("'") || this.comments.includes(",")) {
+            this.nav.present(Alert.create({
+                title: "Comments section invalid",
+                subTitle: "Section <b>comments</b> may not contain commas or quotation marks.",
+                buttons: ["Dismiss"]
+            }));
+            return;
+        }
 
         let qrElement = document.getElementById("qrCode");
         qr.canvas({
@@ -163,7 +171,7 @@ export class NewGamePage {
     }
 
     notFilledOutError(fieldUnfilled, section) {
-        let message = "You have not filled out the field <b>" + fieldUnfilled + "</b>. in the <b>" + section + "</b> section.";
+        let message = "You have not filled out the field <b>" + fieldUnfilled + "</b> in the <b>" + section + "</b> section.";
 
         let alert = Alert.create({
             title: "Incomplete section",
