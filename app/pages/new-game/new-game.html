@@ -200,14 +200,14 @@
                     Teleop Gears
                 </ion-card-header>
                 <ion-card-content class="hasButtons">
-                    Makes:
+                    <span class="makesMissesLabel">Makes:</span>
                     <button danger (click)="decrementGear('makes')">-</button>
-                    {{ gears.makes }}
+                    <span class="makesMissesCounter">{{ gears.makes }}</span>
                     <button primary (click)="incrementGear('makes')">+</button>
                     <br>
-                    Misses:
+                    <span class="makesMissesLabel">Misses:</span>
                     <button danger (click)="decrementGear('misses')">-</button>
-                    {{ gears.misses }}
+                    <span class="makesMissesCounter">{{ gears.misses }}</span>
                     <button primary (click)="incrementGear('misses')">+</button>
                 </ion-card-content>
             </ion-card>
@@ -217,20 +217,20 @@
                     Teleop High Goals
                 </ion-card-header>
                 <ion-card-content class="hasButtons">
-                    Makes:
+                    <span class="makesMissesLabel">Makes:</span>
                     <button danger (click)="decrementGoal('high','makes', 1)">-1</button>
                     <button danger (click)="decrementGoal('high','makes', 5)">-5</button>
                     <button danger (click)="decrementGoal('high','makes', 10)">-10</button>
-                    {{ goals.high.makes }}
+                    <span class="makesMissesCounter">{{ goals.high.makes }}</span>
                     <button primary (click)="incrementGoal('high','makes', 1)">+1</button>
                     <button primary (click)="incrementGoal('high','makes', 5)">+5</button>
                     <button primary (click)="incrementGoal('high','makes', 10)">+10</button>
                     <br>
-                    Misses:
+                    <span class="makesMissesLabel">Misses:</span>
                     <button danger (click)="decrementGoal('high','misses', 1)">-1</button>
                     <button danger (click)="decrementGoal('high','misses', 5)">-5</button>
                     <button danger (click)="decrementGoal('high','misses', 10)">-10</button>
-                    {{ goals.high.misses }}
+                    <span class="makesMissesCounter">{{ goals.high.misses }}</span>
                     <button primary (click)="incrementGoal('high','misses', 1)">+1</button>
                     <button primary (click)="incrementGoal('high','misses', 5)">+5</button>
                     <button primary (click)="incrementGoal('high','misses', 10)">+10</button>
@@ -242,20 +242,20 @@
                     Teleop Low Goals
                 </ion-card-header>
                 <ion-card-content class="hasButtons">
-                    Makes:
+                    <span class="makesMissesLabel">Makes:</span>
                     <button danger (click)="decrementGoal('low','makes', 1)">-1</button>
                     <button danger (click)="decrementGoal('low','makes', 5)">-5</button>
                     <button danger (click)="decrementGoal('low','makes', 10)">-10</button>
-                    {{ goals.low.makes }}
+                    <span class="makesMissesCounter">{{ goals.low.makes }}</span>
                     <button primary (click)="incrementGoal('low','makes', 1)">+1</button>
                     <button primary (click)="incrementGoal('low','makes', 5)">+5</button>
                     <button primary (click)="incrementGoal('low','makes', 10)">+10</button>
                     <br>
-                    Misses:
+                    <span class="makesMissesLabel">Misses:</span>
                     <button danger (click)="decrementGoal('low','misses', 1)">-1</button>
                     <button danger (click)="decrementGoal('low','misses', 5)">-5</button>
                     <button danger (click)="decrementGoal('low','misses', 10)">-10</button>
-                    {{ goals.low.misses }}
+                    <span class="makesMissesCounter">{{ goals.low.misses }}</span>
                     <button primary (click)="incrementGoal('low','misses', 1)">+1</button>
                     <button primary (click)="incrementGoal('low','misses', 5)">+5</button>
                     <button primary (click)="incrementGoal('low','misses', 10)">+10</button>

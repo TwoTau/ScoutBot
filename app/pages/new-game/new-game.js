@@ -163,9 +163,10 @@ export class NewGamePage {
         }
 
         let qrElement = document.getElementById("qrCode");
+        let qrCodeText = this.getText();
         qr.canvas({
             canvas: qrElement,
-            value: this.getText()
+            value: qrCodeText
         });
         qrElement.style.display = "block";
     }
@@ -210,7 +211,13 @@ export class NewGamePage {
             comments: this.comments
         });
         console.log("Encoded: " + text);
-        // console.log("Decoded: " + this.dataService.decode(text).csvRowArray.join(","));
+        console.log("Decoded: " + this.dataService.decode(text).csvRowArray.join(","));
+
+        this.storage.query("INSERT INTO savedcodes (code) VALUES ('" + text + "')").then(data => {
+
+        }, error => {
+            console.log("insert error -> " + JSON.stringify(error) + " with " + text);
+        });
 
         return text;
     }

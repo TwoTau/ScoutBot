@@ -6,8 +6,8 @@
     <ion-list>
         <ion-item-sliding *ngFor="let teamData of data">
             <ion-item>
-                <h2>{{ teamData.teamNumber }} - {{ teamData.scout }}</h2>
-                <h3>{{ teamData.teamName }}</h3>
+                <h2>Match {{ teamData.matchNumber }} - {{ teamData.scoutName }}</h2>
+                <h3>Team {{ teamData.teamNumber }} - {{ teamNumberToName(teamData.teamNumber) }}</h3>
             </ion-item>
             <ion-item-options>
                 <button primary>

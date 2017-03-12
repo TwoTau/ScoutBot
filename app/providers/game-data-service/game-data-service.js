@@ -67,7 +67,6 @@ export class GameDataService {
         return ternaryString;
     }
 
-    // Parameters: teamNumber, scoutColorNumber, scoutName, foul, deadBot, defenses, autonomousDefense, autonomousSuccessful, autoBallGrabbed, autoHighGoal, autoLowGoal, goals, endgame, roles
     encode(options) {
         let teamNumber = options.teamNumber;
         let scoutColorNumber = options.scoutColorNumber;
@@ -99,12 +98,12 @@ export class GameDataService {
         let goalsLowMakes = options.goals.low.makes;
         let goalsLowMisses = options.goals.low.misses;
 
-        let scaling = this.boolToBin(options.scaling);
+        let scaling = this.attemptSuccessTernaryToString(options.scaling);
 
         let rolesHighShooting = this.boolToBin(options.roles.highShooting);
         let rolesLowShooting = this.boolToBin(options.roles.lowShooting);
-        let rolesGears = this.boolToBin(options.roles.breaching);
-        let rolesDefending = this.boolToBin(options.roles.defending);
+        let rolesGears = this.boolToBin(options.roles.gears);
+        let rolesDefending = this.boolToBin(options.roles.defense);
 
         let comments = options.comments;
 
@@ -123,11 +122,11 @@ export class GameDataService {
         let deadBot = this.binToBool(result[5]);
 
         let startingPosition = +result[6];
-        if(startingPosition === 0) {
+        if(startingPosition === 1) {
             startingPosition = "Boiler";
-        } else if(startingPosition === 1) {
-            startingPosition = "Middle";
         } else if(startingPosition === 2) {
+            startingPosition = "Middle";
+        } else if(startingPosition === 3) {
             startingPosition = "Return Loading station";
         }
         let startsWithGear = this.binToBool(result[7]);

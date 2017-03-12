@@ -14,12 +14,34 @@
     ion-list-header, ion-item, div.item-inner {
         border-color: #444;
     }
+
+    .hasButtons button {
+        &[danger] {
+            background: #a11f0d;
+        }
+        &[primary] {
+            background: #139136;
+        }
+    }
 }
 
 .new-game {
 
     button[danger], button[primary] {
         width: 60px;
+    }
+
+    .hasButtons {
+        span.makesMissesLabel {
+            display: inline-block;
+            width: 55px;
+        }
+        span.makesMissesCounter {
+            display: inline-flex;
+            align-items: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
     }
 
     #qrCode {

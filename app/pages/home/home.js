@@ -47,6 +47,11 @@ export class HomePage {
     }
 
     createCodesDb() {
+        this.storage.query("CREATE TABLE IF NOT EXISTS savedcodes (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT)").then(data => {},
+        error => {
+            console.log("create error -> " + JSON.stringify(error));
+        });
+
         this.storage.query("CREATE TABLE IF NOT EXISTS scannedcodes (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT)").then(data => {},
         error => {
             console.log("create error -> " + JSON.stringify(error));
