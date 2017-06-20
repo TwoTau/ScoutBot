@@ -10,19 +10,20 @@
                 <h3>Team {{ teamData.teamNumber }} - {{ teamNumberToName(teamData.teamNumber) }}</h3>
             </ion-item>
             <ion-item-options>
-                <button primary>
+                <button primary (click)="viewMore(teamData.savedId)">
                     <ion-icon name="ios-more"></ion-icon>
                     More
                 </button>
-                <button secondary>
+                <button secondary (click)="editStats(teamData.savedId)">
                     <ion-icon name="stats"></ion-icon>
                     Edit
                 </button>
-                <button danger>
+                <button danger (click)="delete(teamData.savedId)">
                     <ion-icon name="trash"></ion-icon>
                     Delete
                 </button>
             </ion-item-options>
         </ion-item-sliding>
     </ion-list>
+    <canvas id="qrCode"></canvas>
 </ion-content>

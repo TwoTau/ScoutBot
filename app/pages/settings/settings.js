@@ -69,7 +69,7 @@ export class SettingsPage {
     // is the eventCode in the form of a BlueAllianceAPI event code
     isValidEventCode(eventCode) {
         let eventYear = +eventCode.substr(0, 4);
-        if(eventYear < 2016 || eventYear > 2017 || eventCode < 8 || eventCode.length > 9) {
+        if(eventYear > 2017 || eventCode < 8 || eventCode.length > 9) {
             return false;
         }
 
@@ -96,11 +96,11 @@ export class SettingsPage {
     askForEventCode() {
         let prompt = Alert.create({
             title: "Add new event",
-            message: "Enter the Blue Alliance event code for your event. To find this, go to your event on TBA and look at the end of the URL (e.x. 2016wasno, 2016ohcl, or 2016mawor). <strong>Requires internet connection</strong>.",
+            message: "Enter the Blue Alliance event code for your event. To find this, go to your event on TBA and look at the end of the URL (e.g. 2017wasno, 2017ohcl, or 2017mimar). <strong>Requires internet connection</strong>.",
             inputs: [
                 {
                     name: "eventcode",
-                    placeholder: "2016wasno"
+                    placeholder: "2017wasno"
                 }
             ],
             buttons: [
@@ -127,7 +127,7 @@ export class SettingsPage {
 
                                 this.eventCode = eventCode;
                                 this.updateStorage("eventCode");
-                                while(this.teamStorageService.teamsToAdd > 0) {}
+                                // while(this.teamStorageService.teamsToAdd > 0) {}
                                 this.allTeams = this.teamStorageService.getTeams();
                             }, error => { // not a recognized event code (404) or no internet connection
                                 this.onInvalidCode(eventCode);

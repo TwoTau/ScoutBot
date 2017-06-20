@@ -1,4 +1,4 @@
-<ion-navbar *navbar [attr.darkscheme]="darkscheme === 'true' ? true : null">
+<ion-navbar *navbar [attr.darkscheme]="(darkscheme || darkscheme === 'true') ? true : null">
     <ion-title>
         ScoutBot Settings
     </ion-title>

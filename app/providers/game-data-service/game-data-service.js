@@ -98,7 +98,7 @@ export class GameDataService {
         let goalsLowMakes = options.goals.low.makes;
         let goalsLowMisses = options.goals.low.misses;
 
-        let scaling = this.attemptSuccessTernaryToString(options.scaling);
+        let scaling = options.scaling;
 
         let rolesHighShooting = this.boolToBin(options.roles.highShooting);
         let rolesLowShooting = this.boolToBin(options.roles.lowShooting);
@@ -165,6 +165,7 @@ export class GameDataService {
             teamNumber: teamNumber,
             scoutName: scoutName,
             matchNumber: matchNumber,
+            originalEncoded: encodedString,
             csvRowArray: csvRowArray
         };
     }
